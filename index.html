@@ -4,7 +4,16 @@
 <meta charset="UTF-8">
 <title>キャラたん！――誕生日診断――</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&display=swap" rel="stylesheet">
+
+<!-- OGP設定：Xでリンクカード表示 -->
+<meta property="og:title" content="キャラたん！――あなたのキャラクターの誕生日診断">
+<meta property="og:description" content="性格からキャラクターの誕生日と星座を導き出す魔法のツール！">
+<meta property="og:image" content="https://charatan.example.com/og-image.png">
+<meta property="og:url" content="https://charatan.example.com">
+<meta name="twitter:card" content="summary_large_image">
+
 <style>
+/* --- 基本スタイル --- */
 body {
   background: linear-gradient(135deg, #2e1a47, #4b2e7c);
   color: #ffffff;
@@ -13,9 +22,9 @@ body {
   padding: 30px;
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
 }
 
-/* 背景に魔法の粒子 */
 body::after {
   content: '';
   position: absolute;
@@ -29,6 +38,7 @@ body::after {
 @keyframes sparkle { 0%{background-position:0 0;} 100%{background-position:100px 100px;} }
 
 .container { max-width: 800px; margin:auto; position: relative; z-index:1; }
+
 h1 { 
   font-family: 'Baloo 2', cursive; 
   font-size:56px; 
@@ -45,6 +55,7 @@ input[type=text] { padding:10px; font-size:16px; width:60%; border-radius:8px; b
 select { padding:10px 12px; font-size:16px; border-radius:6px; border:none; margin-bottom:20px; }
 button { margin-top:20px; padding:12px 24px; background:#ff99cc; color:#ffffff; font-weight:bold; border:none; border-radius:8px; cursor:pointer; font-size:16px; transition:0.2s; }
 button:hover { background:#ffb3dd; }
+
 .result { margin-top:30px; padding:25px; background:#3b1f58; border-radius:12px; text-align:left; line-height:1.6; }
 .result h2 { text-align:center; color:#ff77cc; margin-bottom:15px; text-shadow: 1px 1px 5px #55297a; }
 .result .info { display:flex; justify-content:space-around; flex-wrap:wrap; font-weight:bold; margin-bottom:15px; }
@@ -54,6 +65,18 @@ button:hover { background:#ffb3dd; }
 .result .dark { color:#ff8080; margin-top:8px; }
 .result .share { display:block; margin-top:20px; text-align:center; background:#ff77cc; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:bold; transition:0.2s; }
 .result .share:hover { background:#ff99cc; }
+
+/* --- レスポンシブ --- */
+@media (max-width: 600px) {
+  body { padding:15px; }
+  h1 { font-size:36px; }
+  p.description { font-size:14px; }
+  input[type=text] { width:90%; font-size:16px; }
+  button { width:80%; font-size:18px; padding:10px 0; }
+  .characteristics label { font-size:14px; padding:6px 8px; }
+  .result { padding:15px; font-size:14px; }
+  .result .info { flex-direction:column; align-items:center; }
+}
 </style>
 </head>
 <body>
@@ -65,6 +88,7 @@ button:hover { background:#ffb3dd; }
 
 <p>性格を3つ以上選んでください</p>
 <div class="characteristics">
+<!-- チェックボックスは前回と同じ -->
 <label><input type="checkbox" value="衝動的">衝動的</label>
 <label><input type="checkbox" value="戦いを恐れない">戦いを恐れない</label>
 <label><input type="checkbox" value="頑固">頑固</label>
@@ -105,7 +129,7 @@ button:hover { background:#ffb3dd; }
 </div>
 
 <script>
-// 星座データ
+// --- 星座データとロジックは前回と同じ ---
 const zodiacData = {
 aries:{name:"牡羊座",light:"道を切り開く先導者。",dark:"衝動が大切なものを失わせる。"},
 taurus:{name:"牡牛座",light:"揺るがぬ守護者。",dark:"執着が変化を拒む。"},
@@ -121,7 +145,6 @@ aquarius:{name:"水瓶座",light:"世界を変える革命家。",dark:"理解�
 pisces:{name:"魚座",light:"魂を癒す共鳴者。",dark:"他人に呑み込まれる。"}
 };
 
-// 星座期間
 const zodiacDates = {
 aries:["3月21日","4月19日"], taurus:["4月20日","5月20"], gemini:["5月21日","6月21"],
 cancer:["6月22日","7月22"], leo:["7月23日","8月22"], virgo:["8月23日","9月22"],
@@ -129,7 +152,18 @@ libra:["9月23日","10月23"], scorpio:["10月24日","11月22"], sagittarius:["1
 capricorn:["12月22日","1月19"], aquarius:["1月20","2月18"], pisces:["2月19","3月20"]
 };
 
-// 名前根拠で月日割り当て
+const seasons = { "春":[3,4,5], "夏":[6,7,8], "秋":[9,10,11], "冬":[12,1,2], "なし":[] };
+const phases = [
+{phase:"早春",range:[{month:2,day:19},{month:3,day:20}]},
+{phase:"春盛",range:[{month:3,day:21},{month:5,day:15}]},
+{phase:"初夏",range:[{month:5,day:16},{month:6,day:21}]},
+{phase:"盛夏",range:[{month:6,day:22},{month:8,day:22}]},
+{phase:"初秋",range:[{month:8,day:23},{month:9,day:30}]},
+{phase:"秋深",range:[{month:10,day:1},{month:11,day:22}]},
+{phase:"晩秋〜初冬",range:[{month:11,day:23},{month:12,day:21}]},
+{phase:"冬極",range:[{month:12,day:22},{month:2,day:18}]}
+];
+
 function assignBirthdayByName(name){
   const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
   let month = (name.length % 12) + 1;
@@ -143,7 +177,6 @@ function assignBirthdayByName(name){
   return {month, day};
 }
 
-// 月日→星座判定
 function getZodiacFromDate(month, day){
   for(let z in zodiacDates){
     let start = zodiacDates[z][0].match(/\d+/g).map(Number);
@@ -162,21 +195,6 @@ function getZodiacFromDate(month, day){
   }
   return "aries";
 }
-
-// 季節
-const seasons = { "春":[3,4,5], "夏":[6,7,8], "秋":[9,10,11], "冬":[12,1,2], "なし":[] };
-
-// 季節心理フェーズ
-const phases = [
-{phase:"早春",range:[{month:2,day:19},{month:3,day:20}]},
-{phase:"春盛",range:[{month:3,day:21},{month:5,day:15}]},
-{phase:"初夏",range:[{month:5,day:16},{month:6,day:21}]},
-{phase:"盛夏",range:[{month:6,day:22},{month:8,day:22}]},
-{phase:"初秋",range:[{month:8,day:23},{month:9,day:30}]},
-{phase:"秋深",range:[{month:10,day:1},{month:11,day:22}]},
-{phase:"晩秋〜初冬",range:[{month:11,day:23},{month:12,day:21}]},
-{phase:"冬極",range:[{month:12,day:22},{month:2,day:18}]}
-];
 
 function adjustMonthBySeason(month, seasonSelected){
   if(seasonSelected==="なし") return month;
@@ -214,6 +232,10 @@ function diagnose(){
   const phase = getPhase(month,day);
   const birthdayStr = `${month}月${day}日`;
 
+  const siteUrl = "https://charatan.example.com"; // ←本番URLに変更
+  const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}(${phase})。光と闇を併せ持つ存在。`;
+  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
+
   document.getElementById("result").innerHTML=`
     <h2>${name} の誕生日診断</h2>
     <div class="info">
@@ -223,11 +245,9 @@ function diagnose(){
     </div>
     <p class="light">🌞【光】${zodiacData[zodiac].light}</p>
     <p class="dark">🌑【闇】${zodiacData[zodiac].dark}</p>
-    <a class="share" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(name+"は"+birthdayStr+"生まれの"+zodiacData[zodiac].name+"("+phase+")。光と闇を併せ持つ存在。")}" target="_blank">Xでシェア</a>
+    <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
   `;
 }
 </script>
 </body>
 </html>
-
-
