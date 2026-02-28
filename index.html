@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>キャラたん！――これがあなたの誕生日！――</title>
+<title>キャラたん！——これがあなたの誕生日！——</title>
 <style>
 body{
-background:linear-gradient(#0f1020,#1b1e3a);
-color:#f0f0f0;
+background: linear-gradient(#0f1020,#1b1e3a);
+color: #f0f0f0;
 font-family:"Hiragino Mincho ProN",serif;
 text-align:center;
 padding:30px;
@@ -16,7 +16,7 @@ max-width:800px;
 margin:auto;
 }
 h1{
-font-size:40px;
+font-size:36px;
 }
 button{
 margin-top:20px;
@@ -39,52 +39,21 @@ margin:5px 10px;
 </head>
 <body>
 <div class="container">
-<h1>キャラたん！</h1>
-<p>自分で考えたキャラクターの性格から誕生日を導き出し、<br>
-物語をさらに深く掘り下げるためのツールです。</p>
+<h1>キャラたん！——これがあなたの誕生日！——</h1>
 
+<p>キャラクター名：</p>
 <input type="text" id="name" placeholder="キャラクター名"><br><br>
 
-<p>性格を3つ以上選んでください</p>
-
-<!-- 性格選択肢 -->
-<div>
-<label><input type="checkbox" value="aries"> 衝動的</label>
-<label><input type="checkbox" value="aries"> 戦いを恐れない</label>
-
-<label><input type="checkbox" value="taurus"> 頑固</label>
-<label><input type="checkbox" value="taurus"> 守るべきものがある</label>
-
-<label><input type="checkbox" value="gemini"> 二面性がある</label>
-<label><input type="checkbox" value="gemini"> 情報通</label>
-
-<label><input type="checkbox" value="cancer"> 仲間思い</label>
-<label><input type="checkbox" value="cancer"> 傷つきやすい</label>
-
-<label><input type="checkbox" value="leo"> 誇り高い</label>
-<label><input type="checkbox" value="leo"> 注目されたい</label>
-
-<label><input type="checkbox" value="virgo"> 完璧主義</label>
-<label><input type="checkbox" value="virgo"> 分析型</label>
-
-<label><input type="checkbox" value="libra"> バランス重視</label>
-<label><input type="checkbox" value="libra"> 平和主義</label>
-
-<label><input type="checkbox" value="scorpio"> 執着心が強い</label>
-<label><input type="checkbox" value="scorpio"> 秘密を抱えている</label>
-
-<label><input type="checkbox" value="sagittarius"> 自由奔放</label>
-<label><input type="checkbox" value="sagittarius"> 理想を追う</label>
-
-<label><input type="checkbox" value="capricorn"> 責任感が強い</label>
-<label><input type="checkbox" value="capricorn"> 野心家</label>
-
-<label><input type="checkbox" value="aquarius"> 個性的</label>
-<label><input type="checkbox" value="aquarius"> 革新的</label>
-
-<label><input type="checkbox" value="pisces"> 共感力が高い</label>
-<label><input type="checkbox" value="pisces"> 自己犠牲的</label>
+<p>性格を選んでください（複数可）</p>
+<div id="traits">
+<!-- JSで生成する -->
 </div>
+
+<p>光テーマを選んでください</p>
+<div id="lightThemes"></div>
+
+<p>闇テーマを選んでください</p>
+<div id="darkThemes"></div>
 
 <button onclick="diagnose()">誕生日を導き出す</button>
 
@@ -93,65 +62,157 @@ margin:5px 10px;
 
 <script>
 
-const zodiacData = {
-aries:{name:"牡羊座",light:"道を切り開く先導者。",dark:"衝動が大切なものを失わせる。"},
-taurus:{name:"牡牛座",light:"揺るがぬ守護者。",dark:"執着が変化を拒む。"},
-gemini:{name:"双子座",light:"言葉と知識の魔術師。",dark:"本心を隠し続ける。"},
-cancer:{name:"蟹座",light:"仲間を守る盾。",dark:"傷つくことを恐れ閉じこもる。"},
-leo:{name:"獅子座",light:"王の資質と輝き。",dark:"承認されぬ孤独。"},
-virgo:{name:"乙女座",light:"世界を整える観察者。",dark:"完璧を求め自分を追い詰める。"},
-libra:{name:"天秤座",light:"対立を調停する者。",dark:"決断を恐れる優柔不断。"},
-scorpio:{name:"蠍座",light:"真実を暴く深淵の瞳。",dark:"復讐心に囚われる。"},
-sagittarius:{name:"射手座",light:"未来を射抜く理想主義者。",dark:"現実から目を逸らす。"},
-capricorn:{name:"山羊座",light:"頂点を目指す努力家。",dark:"成功のために心を犠牲にする。"},
-aquarius:{name:"水瓶座",light:"世界を変える革命家。",dark:"理解されない孤立。"},
-pisces:{name:"魚座",light:"魂を癒す共鳴者。",dark:"他人に呑み込まれる。"}
+// ----------- データ -----------
+
+// 12星座コア
+const zodiacCore = {
+aries:"迷わず前に出る人",
+taurus:"一度決めたら、最後まで守る人",
+gemini:"言葉で道を切り開く人",
+cancer:"大切な人のために戦う人",
+leo:"目立つことを恐れない人",
+virgo:"小さな違和感を見逃さない人",
+libra:"争いの間で答えを探す人",
+scorpio:"本当のことを知ろうとする人",
+sagittarius:"理想を追い続ける人",
+capricorn:"上を目指して登り続ける人",
+aquarius:"みんなと少し違う考えを持つ人",
+pisces:"人の痛みに気づける人"
 };
 
-const zodiacDates = {
-aries:["3月21日","4月19日"],
-taurus:["4月20日","5月20日"],
-gemini:["5月21日","6月21日"],
-cancer:["6月22日","7月22日"],
-leo:["7月23日","8月22日"],
-virgo:["8月23日","9月22日"],
-libra:["9月23日","10月23日"],
-scorpio:["10月24日","11月22日"],
-sagittarius:["11月23日","12月21日"],
-capricorn:["12月22日","1月19日"],
-aquarius:["1月20日","2月18日"],
-pisces:["2月19日","3月20日"]
+// 性格30項目
+const traitData = {
+"衝動的": { aries:5, sagittarius:3, leo:2 },
+"慎重": { virgo:5, capricorn:4, cancer:2 },
+"支配的": { leo:5, capricorn:4, aries:3 },
+"協調的": { libra:5, cancer:4, pisces:3 },
+"論理的": { virgo:5, aquarius:4, gemini:4 },
+"感情的": { cancer:5, scorpio:4, pisces:4 },
+"理想主義": { sagittarius:5, aquarius:4, pisces:3 },
+"現実主義": { capricorn:5, taurus:4, virgo:4 },
+"自己主張強い": { aries:5, leo:4, gemini:3 },
+"自己抑制的": { capricorn:5, virgo:4, scorpio:3 },
+"楽観的": { sagittarius:5, leo:4, gemini:3 },
+"悲観的": { scorpio:5, capricorn:4, cancer:3 },
+"自由奔放": { sagittarius:5, aquarius:4, gemini:4 },
+"規律重視": { capricorn:5, virgo:4, taurus:3 },
+"執着的": { scorpio:5, taurus:4, cancer:3 },
+"切り替えが早い": { gemini:5, sagittarius:4, aquarius:3 },
+"内向的": { cancer:4, scorpio:4, capricorn:3 },
+"外向的": { leo:5, aries:4, gemini:3 },
+"依存的": { pisces:5, cancer:4, libra:3 },
+"自立的": { capricorn:5, aries:4, aquarius:3 },
+"完璧主義": { virgo:5, capricorn:4, scorpio:3 },
+"大雑把": { sagittarius:5, aries:3, leo:2 },
+"秘密主義": { scorpio:5, capricorn:3, cancer:3 },
+"開放的": { gemini:5, sagittarius:4, libra:3 },
+"保守的": { taurus:5, capricorn:4, cancer:3 },
+"革新的": { aquarius:5, gemini:4, sagittarius:3 },
+"受動的": { pisces:4, libra:3, cancer:3 },
+"能動的": { aries:5, leo:4, capricorn:3 },
+"献身的": { pisces:5, cancer:4, virgo:3 },
+"利己的": { leo:4, aries:4, scorpio:3 }
 };
 
-function randomDate(range){
-return range[0]; // 今は期間の開始日を採用（安定動作用）
+// 光テーマ
+const lightThemes = {
+"守護": {cancer:3, taurus:2, leo:2},
+"革命": {aquarius:3, aries:2, sagittarius:2},
+"栄光": {leo:3, capricorn:2, aries:2},
+"救済": {pisces:3, sagittarius:2, libra:2},
+"再生": {scorpio:3, pisces:2, cancer:2},
+"真実追求": {scorpio:3, virgo:2, aquarius:2},
+"自由": {sagittarius:3, aquarius:2, gemini:2},
+"調和": {libra:3, pisces:2, cancer:2},
+"理想実現": {sagittarius:3, capricorn:2, leo:2},
+"継承": {capricorn:3, taurus:2, cancer:2}
+};
+
+// 闇テーマ
+const darkThemes = {
+"復讐心": {scorpio:3, aries:2, capricorn:2},
+"孤独恐怖": {aquarius:3, cancer:2, capricorn:2},
+"承認渇望": {leo:3, aries:2, libra:2},
+"喪失恐怖": {cancer:3, taurus:2, scorpio:2},
+"自己否定": {virgo:3, cancer:2, capricorn:2},
+"依存恐怖": {pisces:3, cancer:2, libra:2},
+"逃避傾向": {sagittarius:3, pisces:2, gemini:2},
+"支配欲": {leo:3, capricorn:2, aries:2},
+"無力恐怖": {capricorn:3, virgo:2, leo:2},
+"裏切り不信": {scorpio:3, capricorn:2, gemini:1}
+};
+
+// 星座期間（日数）
+const zodiacDays = {
+aries:31, taurus:31, gemini:30, cancer:31, leo:31, virgo:30,
+libra:31, scorpio:30, sagittarius:30, capricorn:31, aquarius:30, pisces:29
+};
+
+// ----------- UI生成 -----------
+
+function createCheckboxes(containerId, data){
+const div = document.getElementById(containerId);
+for(let key in data){
+const label = document.createElement("label");
+label.innerHTML = `<input type="checkbox" value="${key}">${key}`;
+div.appendChild(label);
+}
 }
 
+createCheckboxes("traits", traitData);
+createCheckboxes("lightThemes", lightThemes);
+createCheckboxes("darkThemes", darkThemes);
+
+// ----------- 診断ロジック -----------
+
 function diagnose(){
-const name=document.getElementById("name").value||"名もなき者";
-const checks=document.querySelectorAll("input[type=checkbox]:checked");
-if(checks.length<1){alert("性格を選んでください");return;}
+const name = document.getElementById("name").value || "名もなき者";
 
-let count={};
-checks.forEach(c=>{
-count[c.value]=(count[c.value]||0)+1;
-});
+// チェック取得
+const selectedTraits = [...document.querySelectorAll("#traits input:checked")].map(i=>i.value);
+const selectedLight = [...document.querySelectorAll("#lightThemes input:checked")].map(i=>i.value);
+const selectedDark = [...document.querySelectorAll("#darkThemes input:checked")].map(i=>i.value);
 
-let type=Object.keys(count).reduce((a,b)=>count[a]>count[b]?a:b);
-let birthday=randomDate(zodiacDates[type]);
+if(selectedTraits.length<1 || selectedLight.length<1 || selectedDark.length<1){
+alert("すべて選択してください");
+return;
+}
 
-document.getElementById("result").innerHTML=`
-<h2>${name} の誕生日</h2>
-<p><strong>${birthday} 生まれ</strong></p>
-<p><strong>${zodiacData[type].name}</strong></p>
-<hr>
-<p>【光】${zodiacData[type].light}</p>
-<p>【闇】${zodiacData[type].dark}</p>
-<br>
-<a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(name+"は"+birthday+"生まれの"+zodiacData[type].name+"。光と闇を併せ持つ存在。")}">
-Xでシェア
-</a>
-`;
+// スコア計算
+let scores = {};
+function addScore(source){
+for(let key of source){
+const data = (traitData[key] || lightThemes[key] || darkThemes[key]);
+for(let z in data){
+scores[z] = (scores[z]||0) + data[z];
+}
+}
+}
+addScore(selectedTraits);
+addScore(selectedLight);
+addScore(selectedDark);
+
+// 上位星座1位を決定
+let sorted = Object.keys(scores).sort((a,b)=>scores[b]-scores[a]);
+const mainSign = sorted[0];
+
+// 日付計算
+const totalScore = Object.values(scores).reduce((a,b)=>a+b,0);
+const day = (totalScore % zodiacDays[mainSign]) + 1;
+
+// 結果文章
+const signText = zodiacCore[mainSign];
+const lightText = selectedLight.map(l=>`あなたは、${l}したいと願っている。`).join(" ");
+const darkText = selectedDark.map(d=>`でも、${d}が心を縛ることがある。`).join(" ");
+
+const story = `${name}の星は${mainSign}です。
+${signText}
+${lightText}
+${darkText}
+それでも星は光と影を抱えながら進んでいく。
+誕生日は${day}日です。`;
+
+document.getElementById("result").innerText = story;
 }
 
 </script>
