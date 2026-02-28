@@ -11,163 +11,73 @@ body {
   text-align: center;
   padding: 30px;
 }
-
-.container {
-  max-width: 800px;
-  margin: auto;
-}
-
-h1 {
-  font-size: 48px;
-  margin-bottom: 10px;
-  color: #ffdd99;
-}
-
-p.description {
-  font-size: 16px;
-  margin-bottom: 30px;
-  line-height: 1.5;
-}
-
-input[type=text] {
-  padding: 10px;
-  font-size: 16px;
-  width: 60%;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 20px;
-}
-
-.characteristics {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.characteristics label {
-  background: #2c2f4a;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  user-select: none;
-  transition: 0.2s;
-}
-
-.characteristics input[type=checkbox] {
-  margin-right: 6px;
-  transform: scale(1.1);
-}
-
-.characteristics label:hover {
-  background: #3a3f6c;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 24px;
-  background: #ff9933;
-  color: #0f1020;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: 0.2s;
-}
-
-button:hover {
-  background: #ffaa44;
-}
-
-.result {
-  margin-top: 30px;
-  padding: 25px;
-  background: #1a1d33;
-  border-radius: 12px;
-  text-align: left;
-  line-height: 1.6;
-}
-
-.result h2 {
-  text-align: center;
-  color: #ffdd99;
-  margin-bottom: 10px;
-}
-
-.result p.date, .result p.zodiac {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 6px 0;
-}
-
-.result .light {
-  color: #a0ffb0;
-  margin-top: 12px;
-}
-
-.result .dark {
-  color: #ff8080;
-  margin-top: 8px;
-}
-
-.result .share {
-  display: block;
-  margin-top: 20px;
-  text-align: center;
-  background: #1e90ff;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: 0.2s;
-}
-
-.result .share:hover {
-  background: #3399ff;
-}
+.container { max-width: 800px; margin:auto; }
+h1 { font-size:48px; margin-bottom:10px; color:#ffdd99; }
+p.description { font-size:16px; margin-bottom:30px; line-height:1.5; }
+input[type=text] { padding:10px; font-size:16px; width:60%; border-radius:8px; border:none; margin-bottom:10px; }
+.characteristics { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:20px; }
+.characteristics label { background:#2c2f4a; padding:8px 12px; border-radius:6px; cursor:pointer; user-select:none; transition:0.2s; }
+.characteristics input[type=checkbox] { margin-right:6px; transform:scale(1.1); }
+.characteristics label:hover { background:#3a3f6c; }
+select { padding:10px 12px; font-size:16px; border-radius:6px; border:none; margin-bottom:20px; }
+button { margin-top:20px; padding:12px 24px; background:#ff9933; color:#0f1020; font-weight:bold; border:none; border-radius:8px; cursor:pointer; font-size:16px; transition:0.2s; }
+button:hover { background:#ffaa44; }
+.result { margin-top:30px; padding:25px; background:#1a1d33; border-radius:12px; text-align:left; line-height:1.6; }
+.result h2 { text-align:center; color:#ffdd99; margin-bottom:15px; }
+.result .info { display:flex; justify-content:space-around; flex-wrap:wrap; font-weight:bold; margin-bottom:15px; }
+.result .info div { background:#2c2f4a; padding:10px 15px; border-radius:8px; margin:5px; }
+.result .phase { font-style:italic; color:#a0c4ff; }
+.result .light { color:#a0ffb0; margin-top:12px; }
+.result .dark { color:#ff8080; margin-top:8px; }
+.result .share { display:block; margin-top:20px; text-align:center; background:#1e90ff; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:bold; transition:0.2s; }
+.result .share:hover { background:#3399ff; }
 </style>
 </head>
 <body>
 <div class="container">
 <h1>キャラたん！</h1>
-<p class="description">キャラクターの性格から誕生日と星座を導き出し、物語をさらに深く掘り下げるためのツールです。</p>
+<p class="description">キャラクターの性格と名前から誕生日・星座・季節心理フェーズを導き出すツールです。</p>
 
 <input type="text" id="name" placeholder="キャラクター名"><br>
 
 <p>性格を3つ以上選んでください</p>
-
 <div class="characteristics">
-<label><input type="checkbox" value="aries">衝動的</label>
-<label><input type="checkbox" value="aries">戦いを恐れない</label>
-<label><input type="checkbox" value="taurus">頑固</label>
-<label><input type="checkbox" value="taurus">守るべきものがある</label>
-<label><input type="checkbox" value="gemini">二面性がある</label>
-<label><input type="checkbox" value="gemini">情報通</label>
-<label><input type="checkbox" value="cancer">仲間思い</label>
-<label><input type="checkbox" value="cancer">傷つきやすい</label>
-<label><input type="checkbox" value="leo">誇り高い</label>
-<label><input type="checkbox" value="leo">注目されたい</label>
-<label><input type="checkbox" value="virgo">完璧主義</label>
-<label><input type="checkbox" value="virgo">分析型</label>
-<label><input type="checkbox" value="libra">バランス重視</label>
-<label><input type="checkbox" value="libra">平和主義</label>
-<label><input type="checkbox" value="scorpio">執着心が強い</label>
-<label><input type="checkbox" value="scorpio">秘密を抱えている</label>
-<label><input type="checkbox" value="sagittarius">自由奔放</label>
-<label><input type="checkbox" value="sagittarius">理想を追う</label>
-<label><input type="checkbox" value="capricorn">責任感が強い</label>
-<label><input type="checkbox" value="capricorn">野心家</label>
-<label><input type="checkbox" value="aquarius">個性的</label>
-<label><input type="checkbox" value="aquarius">革新的</label>
-<label><input type="checkbox" value="pisces">共感力が高い</label>
-<label><input type="checkbox" value="pisces">自己犠牲的</label>
+<label><input type="checkbox" value="衝動的">衝動的</label>
+<label><input type="checkbox" value="戦いを恐れない">戦いを恐れない</label>
+<label><input type="checkbox" value="頑固">頑固</label>
+<label><input type="checkbox" value="守るべきものがある">守るべきものがある</label>
+<label><input type="checkbox" value="二面性がある">二面性がある</label>
+<label><input type="checkbox" value="情報通">情報通</label>
+<label><input type="checkbox" value="仲間思い">仲間思い</label>
+<label><input type="checkbox" value="傷つきやすい">傷つきやすい</label>
+<label><input type="checkbox" value="誇り高い">誇り高い</label>
+<label><input type="checkbox" value="注目されたい">注目されたい</label>
+<label><input type="checkbox" value="完璧主義">完璧主義</label>
+<label><input type="checkbox" value="分析型">分析型</label>
+<label><input type="checkbox" value="バランス重視">バランス重視</label>
+<label><input type="checkbox" value="平和主義">平和主義</label>
+<label><input type="checkbox" value="執着心が強い">執着心が強い</label>
+<label><input type="checkbox" value="秘密を抱えている">秘密を抱えている</label>
+<label><input type="checkbox" value="自由奔放">自由奔放</label>
+<label><input type="checkbox" value="理想を追う">理想を追う</label>
+<label><input type="checkbox" value="責任感が強い">責任感が強い</label>
+<label><input type="checkbox" value="野心家">野心家</label>
+<label><input type="checkbox" value="個性的">個性的</label>
+<label><input type="checkbox" value="革新的">革新的</label>
+<label><input type="checkbox" value="共感力が高い">共感力が高い</label>
+<label><input type="checkbox" value="自己犠牲的">自己犠牲的</label>
 </div>
 
-<button onclick="diagnose()">誕生日を導き出す</button>
+<p>生まれる季節を選択（こだわらない場合は「なし」）</p>
+<select id="season">
+<option value="なし">なし</option>
+<option value="春">春（3〜5月）</option>
+<option value="夏">夏（6〜8月）</option>
+<option value="秋">秋（9〜11月）</option>
+<option value="冬">冬（12〜2月）</option>
+</select>
 
+<button onclick="diagnose()">誕生日を導き出す</button>
 <div id="result" class="result"></div>
 </div>
 
@@ -188,44 +98,123 @@ pisces:{name:"魚座",light:"魂を癒す共鳴者。",dark:"他人に呑み込�
 };
 
 const zodiacDates = {
-aries:["3月21日","4月19日"],
-taurus:["4月20日","5月20日"],
-gemini:["5月21日","6月21日"],
-cancer:["6月22日","7月22日"],
-leo:["7月23日","8月22日"],
-virgo:["8月23日","9月22日"],
-libra:["9月23日","10月23日"],
-scorpio:["10月24日","11月22日"],
-sagittarius:["11月23日","12月21日"],
-capricorn:["12月22日","1月19日"],
-aquarius:["1月20日","2月18日"],
-pisces:["2月19日","3月20日"]
+aries:["3月21日","4月19日"], taurus:["4月20日","5月20"], gemini:["5月21日","6月21日"],
+cancer:["6月22日","7月22日"], leo:["7月23日","8月22日"], virgo:["8月23日","9月22日"],
+libra:["9月23日","10月23日"], scorpio:["10月24日","11月22日"], sagittarius:["11月23日","12月21日"],
+capricorn:["12月22日","1月19日"], aquarius:["1月20日","2月18日"], pisces:["2月19日","3月20日"]
 };
 
-function randomDate(range){
-  return range[0];
+// 性格ポイントマップ
+const personalityMap = {
+"衝動的": {aries:3, leo:1, sagittarius:2}, "戦いを恐れない": {aries:2, leo:3},
+"頑固": {taurus:3, capricorn:1}, "守るべきものがある": {taurus:2, cancer:1},
+"二面性がある": {gemini:3, libra:1}, "情報通": {gemini:2, aquarius:1},
+"仲間思い": {cancer:3, pisces:1}, "傷つきやすい": {cancer:2, pisces:2},
+"誇り高い": {leo:3, aries:1}, "注目されたい": {leo:2, sagittarius:1},
+"完璧主義": {virgo:3, capricorn:1}, "分析型": {virgo:2, aquarius:1},
+"バランス重視": {libra:3, gemini:1}, "平和主義": {libra:2, pisces:1},
+"執着心が強い": {scorpio:3, capricorn:1}, "秘密を抱えている": {scorpio:2, pisces:1},
+"自由奔放": {sagittarius:3, aries:1}, "理想を追う": {sagittarius:2, leo:1},
+"責任感が強い": {capricorn:3, taurus:1}, "野心家": {capricorn:2, leo:1},
+"個性的": {aquarius:3, gemini:1}, "革新的": {aquarius:2, aries:1},
+"共感力が高い": {pisces:3, cancer:1}, "自己犠牲的": {pisces:2, cancer:1}
+};
+
+// 季節マップ
+const seasons = { "春":[3,4,5], "夏":[6,7,8], "秋":[9,10,11], "冬":[12,1,2], "なし":[] };
+
+// 季節心理フェーズ
+const phases = [
+{phase:"早春",range:[{month:2,day:19},{month:3,day:20}]},
+{phase:"春盛",range:[{month:3,day:21},{month:5,day:15}]},
+{phase:"初夏",range:[{month:5,day:16},{month:6,day:21}]},
+{phase:"盛夏",range:[{month:6,day:22},{month:8,day:22}]},
+{phase:"初秋",range:[{month:8,day:23},{month:9,day:30}]},
+{phase:"秋深",range:[{month:10,day:1},{month:11,day:22}]},
+{phase:"晩秋〜初冬",range:[{month:11,day:23},{month:12,day:21}]},
+{phase:"冬極",range:[{month:12,day:22},{month:2,day:18}]}
+];
+
+// 名前根拠で月日を割り当て
+function assignBirthdayByName(name){
+  const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
+  let month = (name.length % 12) + 1;
+  let points = 0;
+  for(let ch of name){
+    if(ch.match(/[\u3040-\u309F]/)) points+=1;
+    else if(ch.match(/[\u30A0-\u30FF]/)) points+=2;
+    else if(ch.match(/[\u4E00-\u9FFF]/)) points+=3;
+  }
+  let day = (points % daysInMonth[month-1]) + 1;
+  return {month, day};
+}
+
+// 性格→星座ポイント合算
+function calculateZodiacFromPersonality(selected){
+  let totalPoints = {};
+  selected.forEach(p=>{
+    if(personalityMap[p]){
+      for(let z in personalityMap[p]){
+        totalPoints[z] = (totalPoints[z]||0) + personalityMap[p][z];
+      }
+    }
+  });
+  let max = Object.keys(totalPoints).reduce((a,b)=> totalPoints[a]>=totalPoints[b]?a:b);
+  return max;
+}
+
+// 季節調整
+function adjustMonthBySeason(month, seasonSelected){
+  if(seasonSelected==="なし") return month;
+  const seasonMonths = seasons[seasonSelected];
+  if(!seasonMonths.includes(month)){
+    return seasonMonths[Math.floor(Math.random()*seasonMonths.length)];
+  }
+  return month;
+}
+
+// 季節心理フェーズ判定
+function getPhase(month,day){
+  for(let i=0;i<phases.length;i++){
+    let r=phases[i].range;
+    if((month>r[0].month || (month===r[0].month && day>=r[0].day)) &&
+       (month<r[1].month || (month===r[1].month && day<=r[1].day))){
+      return phases[i].phase;
+    }
+    if(phases[i].phase==="冬極" &&
+       ((month===12 && day>=22)||(month===1)||(month===2 && day<=18))){
+      return "冬極";
+    }
+  }
+  return "";
 }
 
 function diagnose(){
   const name=document.getElementById("name").value||"名もなき者";
   const checks=document.querySelectorAll("input[type=checkbox]:checked");
   if(checks.length<1){alert("性格を選んでください");return;}
+  const seasonSelected = document.getElementById("season").value;
 
-  let count={};
-  checks.forEach(c=>{count[c.value]=(count[c.value]||0)+1;});
-  let type=Object.keys(count).reduce((a,b)=>count[a]>count[b]?a:b);
-  let birthday=randomDate(zodiacDates[type]);
+  const zodiac = calculateZodiacFromPersonality(Array.from(checks).map(c=>c.value));
+  let {month,day} = assignBirthdayByName(name);
+  month = adjustMonthBySeason(month, seasonSelected);
+
+  const phase = getPhase(month,day);
+  const birthdayStr = `${month}月${day}日`;
 
   document.getElementById("result").innerHTML=`
-  <h2>${name} の誕生日診断</h2>
-  <p class="date">誕生日: <strong>${birthday}</strong></p>
-  <p class="zodiac">星座: <strong>${zodiacData[type].name}</strong></p>
-  <hr>
-  <p class="light">【光】${zodiacData[type].light}</p>
-  <p class="dark">【闇】${zodiacData[type].dark}</p>
-  <a class="share" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(name+"は"+birthday+"生まれの"+zodiacData[type].name+"。光と闇を併せ持つ存在。")}" target="_blank">Xでシェア</a>
+    <h2>${name} の誕生日診断</h2>
+    <div class="info">
+      <div>誕生日: <strong>${birthdayStr}</strong></div>
+      <div>星座: <strong>${zodiacData[zodiac].name}</strong></div>
+      <div class="phase">季節心理: <strong>${phase}</strong></div>
+    </div>
+    <p class="light">🌞【光】${zodiacData[zodiac].light}</p>
+    <p class="dark">🌑【闇】${zodiacData[zodiac].dark}</p>
+    <a class="share" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(name+"は"+birthdayStr+"生まれの"+zodiacData[zodiac].name+"("+phase+")。光と闇を併せ持つ存在。")}" target="_blank">Xでシェア</a>
   `;
 }
 </script>
 </body>
 </html>
+
