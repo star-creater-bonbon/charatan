@@ -1903,13 +1903,7 @@ function getPhase(month,day){
   }
   return "";
 }
-
-function diagnose(){
-  const name=document.getElementById("name").value||"名もなき者";
-  const checks=document.querySelectorAll("input[type=checkbox]:checked");
-  if(checks.length<1){alert("性格を選んでください");return;}
-  const seasonSelected = document.getElementById("season").value;
-
+  
 function assignBirthdayByName(name){
   const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
   
@@ -1921,10 +1915,18 @@ function assignBirthdayByName(name){
     else if(ch.match(/[\u4E00-\u9FFF]/)) points += code * 3;
     else points += code;
   }
-
   let month = (points % 12) + 1;
   let day = (Math.floor(points / 12) % daysInMonth[month-1]) + 1;
   return {month, day};
+}
+
+ function diagnose(){
+  const name=document.getElementById("name").value||"名もなき者";
+  const checks=document.querySelectorAll("input[type=checkbox]:checked");
+  if(checks.length<1){alert("性格を選んでください");return;}
+  const seasonSelected = document.getElementById("season").value;
+ 
+   let {month,day} = assignBirthdayByName(name);
 }
 
   const siteUrl = "https://star-creater-bonbon.github.io/charatan/"; 
@@ -1946,6 +1948,7 @@ function assignBirthdayByName(name){
 </script>
 </body>
 </html>
+
 
 
 
