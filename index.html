@@ -1903,10 +1903,9 @@ function getPhase(month,day){
   }
   return "";
 }
-  
-function assignBirthdayByName(name){
+
+  function assignBirthdayByName(name){
   const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
-  
   let points = 0;
   for(let ch of name){
     const code = ch.charCodeAt(0); 
@@ -1920,16 +1919,19 @@ function assignBirthdayByName(name){
   return {month, day};
 }
 
- function diagnose(){
+function diagnose(){
   const name=document.getElementById("name").value||"名もなき者";
   const checks=document.querySelectorAll("input[type=checkbox]:checked");
   if(checks.length<1){alert("性格を選んでください");return;}
   const seasonSelected = document.getElementById("season").value;
- 
-   let {month,day} = assignBirthdayByName(name);
-}
 
-  const siteUrl = "https://star-creater-bonbon.github.io/charatan/"; 
+  let {month,day} = assignBirthdayByName(name);
+  month = adjustMonthBySeason(month, seasonSelected); // ← これが続く
+  const zodiac = getZodiacFromDate(month, day);
+  const phase = getPhase(month,day);
+  const birthdayStr = `${month}月${day}日`;
+
+  const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
   const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}(${phase})。光と闇を併せ持つ存在。`;
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
 
@@ -1948,6 +1950,7 @@ function assignBirthdayByName(name){
 </script>
 </body>
 </html>
+
 
 
 
