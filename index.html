@@ -21,7 +21,7 @@ body {
   text-align: center;
   padding: 30px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden; /* 横スクロール禁止 */
   min-height: 100vh;
 }
 
@@ -35,47 +35,181 @@ body::after {
   animation: sparkle 10s linear infinite;
   z-index:0;
 }
-@keyframes sparkle { 0%{background-position:0 0;} 100%{background-position:100px 100px;} }
 
-.container { max-width: 800px; margin:auto; position: relative; z-index:1; }
+@keyframes sparkle {
+  0% { background-position:0 0; }
+  100% { background-position:100px 100px; }
+}
+
+.container { 
+  max-width: 800px; 
+  margin: auto; 
+  position: relative; 
+  z-index:1; 
+}
 
 h1 { 
   font-family: 'Baloo 2', cursive; 
-  font-size:56px; 
-  margin-bottom:10px; 
-  color:#ff77cc; 
+  font-size: 56px; 
+  margin-bottom: 10px; 
+  color: #ff77cc; 
   text-shadow: 2px 2px 8px #55297a;
 }
-p.description { font-size:16px; margin-bottom:30px; line-height:1.5; }
-input[type=text] { padding:10px; font-size:16px; width:60%; border-radius:8px; border:none; margin-bottom:10px; }
-.characteristics { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:20px; }
-.characteristics label { background:#6b3e8c; padding:8px 12px; border-radius:6px; cursor:pointer; user-select:none; transition:0.2s; }
-.characteristics input[type=checkbox] { margin-right:6px; transform:scale(1.1); }
-.characteristics label:hover { background:#8251b5; }
-select { padding:10px 12px; font-size:16px; border-radius:6px; border:none; margin-bottom:20px; }
-button { margin-top:20px; padding:12px 24px; background:#ff99cc; color:#ffffff; font-weight:bold; border:none; border-radius:8px; cursor:pointer; font-size:16px; transition:0.2s; }
-button:hover { background:#ffb3dd; }
 
-.result { margin-top:30px; padding:25px; background:#3b1f58; border-radius:12px; text-align:left; line-height:1.6; }
-.result h2 { text-align:center; color:#ff77cc; margin-bottom:15px; text-shadow: 1px 1px 5px #55297a; }
-.result .info { display:flex; justify-content:space-around; flex-wrap:wrap; font-weight:bold; margin-bottom:15px; }
-.result .info div { background:#55297a; padding:10px 15px; border-radius:8px; margin:5px; }
-.result .phase { font-style:italic; color:#a0c4ff; }
-.result .light { color:#a0ffb0; margin-top:12px; }
-.result .dark { color:#ff8080; margin-top:8px; }
-.result .share { display:block; margin-top:20px; text-align:center; background:#ff77cc; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:bold; transition:0.2s; }
-.result .share:hover { background:#ff99cc; }
+p.description { 
+  font-size: 16px; 
+  margin-bottom: 30px; 
+  line-height: 1.5; 
+}
 
-/* --- レスポンシブ --- */
+input[type=text], select { 
+  padding: 12px; 
+  font-size: 18px; 
+  width: 100%; /* 画面幅いっぱい */
+  border-radius: 10px; 
+  border: none; 
+  margin-bottom: 15px; 
+}
+
+.characteristics { 
+  display: flex; 
+  flex-direction: column; /* 縦並びに変更 */
+  align-items: stretch;
+  gap: 12px; 
+  margin-bottom: 25px; 
+}
+
+.characteristics label { 
+  background: #6b3e8c; 
+  padding: 14px 16px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  user-select: none; 
+  transition: 0.2s; 
+  display: flex;
+  align-items: center;
+}
+
+.characteristics input[type=checkbox] { 
+  margin-right: 12px; 
+  transform: scale(1.5); 
+}
+
+.characteristics label:hover { 
+  background: #8251b5; 
+}
+
+button { 
+  margin-top: 25px; 
+  padding: 18px 0; 
+  background: #ff99cc; 
+  color: #ffffff; 
+  font-weight: bold; 
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  font-size: 22px; 
+  width: 100%; /* 画面幅いっぱい */
+  transition: 0.2s; 
+}
+
+button:hover { 
+  background: #ffb3dd; 
+}
+
+.result { 
+  margin-top: 30px; 
+  padding: 25px; 
+  background: #3b1f58; 
+  border-radius: 12px; 
+  text-align: left; 
+  line-height: 2.0; 
+}
+
+.result h2 { 
+  text-align: center; 
+  color: #ff77cc; 
+  margin-bottom: 20px; 
+  text-shadow: 1px 1px 5px #55297a; 
+}
+
+.result .info { 
+  display: flex; 
+  flex-direction: column; /* 縦並び */
+  align-items: stretch;
+  font-weight: bold; 
+  margin-bottom: 20px; 
+  gap: 12px;
+}
+
+.result .info div { 
+  background: #55297a; 
+  padding: 16px 20px; 
+  border-radius: 10px; 
+}
+
+.result .phase { 
+  font-style: italic; 
+  color: #a0c4ff; 
+}
+
+.result .light { 
+  color: #a0ffb0; 
+  margin-top: 15px; 
+}
+
+.result .dark { 
+  color: #ff8080; 
+  margin-top: 15px; 
+}
+
+.result .share { 
+  display: block; 
+  margin-top: 25px; 
+  text-align: center; 
+  background: #ff77cc; 
+  color: white; 
+  padding: 16px 20px; 
+  border-radius: 10px; 
+  text-decoration: none; 
+  font-weight: bold; 
+  font-size: 20px; 
+  transition: 0.2s; 
+}
+
+.result .share:hover { 
+  background: #ff99cc; 
+}
+
+/* --- 完全スマホ最適化 --- */
 @media (max-width: 600px) {
-  body { padding:15px; }
-  h1 { font-size:36px; }
-  p.description { font-size:14px; }
-  input[type=text] { width:90%; font-size:16px; }
-  button { width:80%; font-size:18px; padding:10px 0; }
-  .characteristics label { font-size:14px; padding:6px 8px; }
-  .result { padding:15px; font-size:14px; }
-  .result .info { flex-direction:column; align-items:center; }
+  body { padding: 25px 15px; }
+
+  h1 { font-size: 42px; }
+  p.description { font-size: 18px; line-height: 2.0; }
+
+  input[type=text], select { 
+    font-size: 20px; 
+    padding: 16px; 
+  }
+
+  .characteristics label { 
+    font-size: 18px; 
+    padding: 16px 18px; 
+  }
+
+  .characteristics input[type=checkbox] {
+    transform: scale(1.6); 
+    margin-right: 14px;
+  }
+
+  button { font-size: 22px; padding: 20px 0; }
+
+  .result { font-size: 18px; line-height: 2.0; padding: 25px; }
+
+  .result .info div { padding: 18px 20px; }
+
+  .result .share { font-size: 22px; padding: 18px 22px; }
 }
 </style>
 </head>
@@ -1818,6 +1952,7 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
 
 
