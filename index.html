@@ -1821,14 +1821,15 @@ function diagnose(){
       <div>星座: <strong>${zodiacData[zodiac].name}</strong></div>
       <div class="phase">季節心理: <strong>${phase}</strong></div>
     </div>
-    <p class="light">🌞【光】${zodiacData[zodiac].light}</p>
-    <p class="dark">🌑【闇】${zodiacData[zodiac].dark}</p>
+    <p class="light">🌞【光】${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}</p>
+    <p class="dark">🌑【闇】${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}</p>
     <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
   `;
 }
 </script>
 </body>
 </html>
+
 
 
 
