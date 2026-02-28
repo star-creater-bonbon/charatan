@@ -232,7 +232,7 @@ function diagnose(){
   const phase = getPhase(month,day);
   const birthdayStr = `${month}月${day}日`;
 
-  const siteUrl = "https://github.com/star-creater-bonbon/github.io"; // ←本番URLに変更
+  const siteUrl = "https://star-creater-bonbon.github.io/charatan/"; // ←本番URLに変更
   const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}(${phase})。光と闇を併せ持つ存在。`;
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
 
@@ -251,5 +251,6 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
 
