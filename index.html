@@ -2,18 +2,21 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title> キャラたん！――これがあなたの誕生日！――</title>
+<title>キャラたん！――これがあなたの誕生日！――</title>
 <style>
 body{
-background:#0d0f1a;
-color:#e6e6e6;
-font-family:serif;
+background:linear-gradient(#0f1020,#1b1e3a);
+color:#f0f0f0;
+font-family:"Hiragino Mincho ProN",serif;
 text-align:center;
 padding:30px;
 }
 .container{
-max-width:600px;
+max-width:800px;
 margin:auto;
+}
+h1{
+font-size:40px;
 }
 button{
 margin-top:20px;
@@ -28,90 +31,129 @@ margin-top:30px;
 padding:20px;
 background:#1a1d33;
 }
+label{
+display:inline-block;
+margin:5px 10px;
+}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>キャラたん！</h1>
-<p>自分の考えたキャラクターの性格から誕生日を導き出して、さらに深く掘り下げるためのツールです。</p>
+<p>自分で考えたキャラクターの性格から誕生日を導き出し、<br>
+物語をさらに深く掘り下げるためのツールです。</p>
 
 <input type="text" id="name" placeholder="キャラクター名"><br><br>
 
-<p>性格を3つ選んでください</p>
-<label><input type="checkbox" value="fire"> 衝動的</label>
-<label><input type="checkbox" value="fire"> 主人公気質</label>
-<label><input type="checkbox" value="earth"> 冷静</label>
-<label><input type="checkbox" value="earth"> 責任感が強い</label>
-<label><input type="checkbox" value="air"> 孤独</label>
-<label><input type="checkbox" value="air"> 天才肌</label>
-<label><input type="checkbox" value="water"> 執着心が強い</label>
-<label><input type="checkbox" value="water"> 自己犠牲的</label>
+<p>性格を3つ以上選んでください</p>
 
-<br>
-<button onclick="diagnose()">誕生日決定ボタン</button>
+<!-- 性格選択肢 -->
+<div>
+<label><input type="checkbox" value="aries"> 衝動的</label>
+<label><input type="checkbox" value="aries"> 戦いを恐れない</label>
+
+<label><input type="checkbox" value="taurus"> 頑固</label>
+<label><input type="checkbox" value="taurus"> 守るべきものがある</label>
+
+<label><input type="checkbox" value="gemini"> 二面性がある</label>
+<label><input type="checkbox" value="gemini"> 情報通</label>
+
+<label><input type="checkbox" value="cancer"> 仲間思い</label>
+<label><input type="checkbox" value="cancer"> 傷つきやすい</label>
+
+<label><input type="checkbox" value="leo"> 誇り高い</label>
+<label><input type="checkbox" value="leo"> 注目されたい</label>
+
+<label><input type="checkbox" value="virgo"> 完璧主義</label>
+<label><input type="checkbox" value="virgo"> 分析型</label>
+
+<label><input type="checkbox" value="libra"> バランス重視</label>
+<label><input type="checkbox" value="libra"> 平和主義</label>
+
+<label><input type="checkbox" value="scorpio"> 執着心が強い</label>
+<label><input type="checkbox" value="scorpio"> 秘密を抱えている</label>
+
+<label><input type="checkbox" value="sagittarius"> 自由奔放</label>
+<label><input type="checkbox" value="sagittarius"> 理想を追う</label>
+
+<label><input type="checkbox" value="capricorn"> 責任感が強い</label>
+<label><input type="checkbox" value="capricorn"> 野心家</label>
+
+<label><input type="checkbox" value="aquarius"> 個性的</label>
+<label><input type="checkbox" value="aquarius"> 革新的</label>
+
+<label><input type="checkbox" value="pisces"> 共感力が高い</label>
+<label><input type="checkbox" value="pisces"> 自己犠牲的</label>
+</div>
+
+<button onclick="diagnose()">誕生日を導き出す</button>
 
 <div id="result" class="result"></div>
 </div>
 
 <script>
-const stars = {
-fire: {
-name:"戦火の星（牡羊座・獅子座・射手座）",
-light:"先陣を切る勇気と燃える意志。",
-dark:"衝動が大切なものを焼き尽くす危険。"
-},
-earth: {
-name:"断罪の星（牡牛座・乙女座・山羊座）",
-light:"揺るがぬ信念と現実を支える力。",
-dark:"融通の利かなさが孤立を招く。"
-},
-air: {
-name:"革命の星（双子座・天秤座・水瓶座）",
-light:"世界を変える知性と発想。",
-dark:"理解されぬ孤独を抱えやすい。"
-},
-water: {
-name:"深淵の星（蟹座・蠍座・魚座）",
-light:"他者の心に寄り添う共感力。",
-dark:"執着が自らを蝕む。"
-}
+
+const zodiacData = {
+aries:{name:"牡羊座",light:"道を切り開く先導者。",dark:"衝動が大切なものを失わせる。"},
+taurus:{name:"牡牛座",light:"揺るがぬ守護者。",dark:"執着が変化を拒む。"},
+gemini:{name:"双子座",light:"言葉と知識の魔術師。",dark:"本心を隠し続ける。"},
+cancer:{name:"蟹座",light:"仲間を守る盾。",dark:"傷つくことを恐れ閉じこもる。"},
+leo:{name:"獅子座",light:"王の資質と輝き。",dark:"承認されぬ孤独。"},
+virgo:{name:"乙女座",light:"世界を整える観察者。",dark:"完璧を求め自分を追い詰める。"},
+libra:{name:"天秤座",light:"対立を調停する者。",dark:"決断を恐れる優柔不断。"},
+scorpio:{name:"蠍座",light:"真実を暴く深淵の瞳。",dark:"復讐心に囚われる。"},
+sagittarius:{name:"射手座",light:"未来を射抜く理想主義者。",dark:"現実から目を逸らす。"},
+capricorn:{name:"山羊座",light:"頂点を目指す努力家。",dark:"成功のために心を犠牲にする。"},
+aquarius:{name:"水瓶座",light:"世界を変える革命家。",dark:"理解されない孤立。"},
+pisces:{name:"魚座",light:"魂を癒す共鳴者。",dark:"他人に呑み込まれる。"}
 };
 
-function diagnose(){
-const name = document.getElementById("name").value || "名もなき者";
-const checks = document.querySelectorAll("input[type=checkbox]:checked");
+const zodiacDates = {
+aries:["3月21日","4月19日"],
+taurus:["4月20日","5月20日"],
+gemini:["5月21日","6月21日"],
+cancer:["6月22日","7月22日"],
+leo:["7月23日","8月22日"],
+virgo:["8月23日","9月22日"],
+libra:["9月23日","10月23日"],
+scorpio:["10月24日","11月22日"],
+sagittarius:["11月23日","12月21日"],
+capricorn:["12月22日","1月19日"],
+aquarius:["1月20日","2月18日"],
+pisces:["2月19日","3月20日"]
+};
 
-if(checks.length < 1){
-alert("性格を選んでください");
-return;
+function randomDate(range){
+return range[0]; // 今は期間の開始日を採用（安定動作用）
 }
 
-let count = {fire:0, earth:0, air:0, water:0};
+function diagnose(){
+const name=document.getElementById("name").value||"名もなき者";
+const checks=document.querySelectorAll("input[type=checkbox]:checked");
+if(checks.length<1){alert("性格を選んでください");return;}
 
+let count={};
 checks.forEach(c=>{
-count[c.value]++;
+count[c.value]=(count[c.value]||0)+1;
 });
 
-let type = Object.keys(count).reduce((a,b)=> count[a] > count[b] ? a : b);
+let type=Object.keys(count).reduce((a,b)=>count[a]>count[b]?a:b);
+let birthday=randomDate(zodiacDates[type]);
 
-const month = Math.floor(Math.random()*12)+1;
-const day = Math.floor(Math.random()*28)+1;
-
-document.getElementById("result").innerHTML = `
-<h2>${name}の星辰記録</h2>
-<p><strong>${month}月${day}日生まれ</strong></p>
-<p><strong>${stars[type].name}</strong></p>
+document.getElementById("result").innerHTML=`
+<h2>${name} の誕生日</h2>
+<p><strong>${birthday} 生まれ</strong></p>
+<p><strong>${zodiacData[type].name}</strong></p>
 <hr>
-<p>【光の資質】<br>${stars[type].light}</p>
-<p>【闇の因子】<br>${stars[type].dark}</p>
+<p>【光】${zodiacData[type].light}</p>
+<p>【闇】${zodiacData[type].dark}</p>
 <br>
-<a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(name+"は"+month+"月"+day+"日生まれ。"+stars[type].name+"の祝福と代償を背負う。")}" target="_blank">
-結果をXでシェア
+<a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(name+"は"+birthday+"生まれの"+zodiacData[type].name+"。光と闇を併せ持つ存在。")}">
+Xでシェア
 </a>
 `;
 }
+
 </script>
-
 </body>
-
 </html>
