@@ -1903,7 +1903,181 @@ function getPhase(month,day){
   }
   return "";
 }
+// 性格ごとの星座ポイント表
+// 各性格に3〜4星座、合計ポイントは星座によって差をつける
+// 3=強い関連、2=中程度、1=弱い関連
 
+const traitScores = {
+
+  "謎めいている":
+    { scorpio:3, pisces:2, aquarius:2, capricorn:1 },
+
+  "使命に生きる":
+    { capricorn:3, aries:2, sagittarius:2, leo:1 },
+
+  "過去に傷を持つ":
+    { scorpio:3, cancer:3, pisces:2, capricorn:1 },
+
+  "優雅":
+    { libra:3, taurus:2, leo:2, virgo:1 },
+
+  "死を恐れない":
+    { aries:3, scorpio:3, sagittarius:2, capricorn:1 },
+
+  "孤独を愛する":
+    { aquarius:3, capricorn:2, scorpio:2, virgo:1 },
+
+  "誰かを守るために戦う":
+    { cancer:3, taurus:2, leo:2, capricorn:1 },
+
+  "儚げ":
+    { pisces:3, cancer:2, libra:2, gemini:1 },
+
+  "復讐を誓っている":
+    { scorpio:3, aries:2, capricorn:2, leo:1 },
+
+  "エネルギッシュ":
+    { aries:3, leo:2, sagittarius:2, gemini:1 },
+
+  "仮面をかぶっている":
+    { scorpio:3, libra:2, gemini:2, capricorn:1 },
+
+  "正義を信じている":
+    { libra:3, sagittarius:2, leo:2, aries:1 },
+
+  "笑顔の裏に孤独がある":
+    { gemini:3, leo:2, sagittarius:2, pisces:1 },
+
+  "運命に抗う":
+    { aquarius:3, aries:2, scorpio:2, sagittarius:1 },
+
+  "威圧感がある":
+    { scorpio:3, capricorn:2, leo:2, aries:1 },
+
+  "一人を深く愛する":
+    { scorpio:3, taurus:2, cancer:2, pisces:1 },
+
+  "真実を暴こうとする":
+    { scorpio:3, aquarius:2, sagittarius:2, virgo:1 },
+
+  "血筋を背負っている":
+    { capricorn:3, leo:2, cancer:2, taurus:1 },
+
+  "闇に親しみを感じる":
+    { scorpio:3, pisces:2, capricorn:2, aquarius:1 },
+
+  "師匠気質":
+    { capricorn:3, sagittarius:2, virgo:2, aquarius:1 },
+
+  "故郷を失った":
+    { cancer:3, pisces:2, taurus:2, capricorn:1 },
+
+  "冷静沈着":
+    { capricorn:3, aquarius:2, virgo:2, libra:1 },
+
+  "誰も知らない秘密がある":
+    { scorpio:3, pisces:2, gemini:2, capricorn:1 },
+
+  "旅を続けている":
+    { sagittarius:3, gemini:2, aries:2, aquarius:1 },
+
+  "美しいものに惹かれる":
+    { libra:3, taurus:2, pisces:2, leo:1 },
+
+  "反骨精神":
+    { aquarius:3, aries:2, sagittarius:2, scorpio:1 },
+
+  "裏切りを経験した":
+    { scorpio:3, cancer:2, capricorn:2, pisces:1 },
+
+  "光の中に立とうとする":
+    { leo:3, sagittarius:2, aries:2, libra:1 },
+
+  "道化を演じる":
+    { gemini:3, sagittarius:2, leo:2, pisces:1 },
+
+  "民を守りたい":
+    { cancer:3, capricorn:2, taurus:2, libra:1 },
+
+  "感情を隠す":
+    { capricorn:3, scorpio:2, aquarius:2, virgo:1 },
+
+  "力を持て余している":
+    { aries:3, scorpio:2, leo:2, sagittarius:1 },
+
+  "本当の名を隠している":
+    { scorpio:3, gemini:2, pisces:2, aquarius:1 },
+
+  "未来だけを見ている":
+    { aquarius:3, sagittarius:2, aries:2, gemini:1 },
+
+  "献身的すぎる":
+    { pisces:3, cancer:2, virgo:2, libra:1 },
+
+  "魔法と縁がある":
+    { pisces:3, scorpio:2, aquarius:2, gemini:1 },
+
+  "人を試す":
+    { scorpio:3, capricorn:2, aquarius:2, libra:1 },
+
+  "記憶を大切にする":
+    { cancer:3, taurus:2, pisces:2, capricorn:1 },
+
+  "王に仕える":
+    { capricorn:3, taurus:2, virgo:2, leo:1 },
+
+  "嫉妬深い":
+    { scorpio:3, taurus:2, cancer:2, leo:1 },
+
+  "神に愛されている":
+    { leo:3, sagittarius:2, pisces:2, aries:1 },
+
+  "剣より言葉を選ぶ":
+    { libra:3, gemini:2, aquarius:2, virgo:1 },
+
+  "時代の犠牲になった":
+    { pisces:3, capricorn:2, cancer:2, virgo:1 },
+
+  "誰とでも打ち解ける":
+    { gemini:3, sagittarius:2, libra:2, aries:1 },
+
+  "王に抗う":
+    { aquarius:3, aries:2, sagittarius:2, scorpio:1 },
+
+  "伝説を知っている":
+    { capricorn:3, sagittarius:2, scorpio:2, pisces:1 },
+
+  "規則を破れる":
+    { aquarius:3, aries:2, sagittarius:2, gemini:1 },
+
+  "神に呪われている":
+    { scorpio:3, pisces:2, capricorn:2, aquarius:1 },
+
+  "最後まで諦めない":
+    { aries:3, taurus:2, capricorn:2, leo:1 },
+
+  "英雄的":
+    { aries:3, leo:2, sagittarius:2, capricorn:1 },
+
+};
+
+// ────────────────────────────────────────
+// 使い方
+// ────────────────────────────────────────
+// チェックされた性格のポイントを集計して星座を決める
+//
+// function getZodiacByTraits(selectedTraits) {
+//   const scores = {};
+//   for (const trait of selectedTraits) {
+//     const points = traitScores[trait];
+//     if (!points) continue;
+//     for (const [zodiac, point] of Object.entries(points)) {
+//       scores[zodiac] = (scores[zodiac] || 0) + point;
+//     }
+//   }
+//   // 最高得点の星座を返す
+//   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+// }
   function assignBirthdayByName(name){
   const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
   let points = 0;
@@ -1927,7 +2101,18 @@ function diagnose(){
 
   let {month,day} = assignBirthdayByName(name);
   month = adjustMonthBySeason(month, seasonSelected); // ← これが続く
-  const zodiac = getZodiacFromDate(month, day);
+  // 性格ポイントで星座を決める
+const selectedTraits = [...checks].map(c => c.value);
+const zodiacScores = {};
+for(const trait of selectedTraits){
+  const points = traitScores[trait];
+  if(!points) continue;
+  for(const [zodiac, point] of Object.entries(points)){
+    zodiacScores[zodiac] = (zodiacScores[zodiac] || 0) + point;
+  }
+}
+const zodiac = Object.entries(zodiacScores)
+  .sort((a, b) => b[1] - a[1])[0][0];
   const phase = getPhase(month,day);
   const birthdayStr = `${month}月${day}日`;
 
@@ -1950,6 +2135,7 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
 
 
