@@ -3,34 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <title>キャラたん！――誕生日診断――</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&display=swap" rel="stylesheet">
 <style>
 body {
-  background: linear-gradient(135deg, #0f1020, #1b1e3a);
-  color: #f0f0f0;
+  background: linear-gradient(135deg, #2e1a47, #4b2e7c);
+  color: #ffffff;
   font-family: "Hiragino Mincho ProN", serif;
   text-align: center;
   padding: 30px;
+  position: relative;
+  overflow: hidden;
 }
-.container { max-width: 800px; margin:auto; }
-h1 { font-size:48px; margin-bottom:10px; color:#ffdd99; }
+
+/* 背景に魔法の粒子 */
+body::after {
+  content: '';
+  position: absolute;
+  top:0; left:0; width:100%; height:100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  animation: sparkle 10s linear infinite;
+  z-index:0;
+}
+@keyframes sparkle { 0%{background-position:0 0;} 100%{background-position:100px 100px;} }
+
+.container { max-width: 800px; margin:auto; position: relative; z-index:1; }
+h1 { 
+  font-family: 'Baloo 2', cursive; 
+  font-size:56px; 
+  margin-bottom:10px; 
+  color:#ff77cc; 
+  text-shadow: 2px 2px 8px #55297a;
+}
 p.description { font-size:16px; margin-bottom:30px; line-height:1.5; }
 input[type=text] { padding:10px; font-size:16px; width:60%; border-radius:8px; border:none; margin-bottom:10px; }
 .characteristics { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:20px; }
-.characteristics label { background:#2c2f4a; padding:8px 12px; border-radius:6px; cursor:pointer; user-select:none; transition:0.2s; }
+.characteristics label { background:#6b3e8c; padding:8px 12px; border-radius:6px; cursor:pointer; user-select:none; transition:0.2s; }
 .characteristics input[type=checkbox] { margin-right:6px; transform:scale(1.1); }
-.characteristics label:hover { background:#3a3f6c; }
+.characteristics label:hover { background:#8251b5; }
 select { padding:10px 12px; font-size:16px; border-radius:6px; border:none; margin-bottom:20px; }
-button { margin-top:20px; padding:12px 24px; background:#ff9933; color:#0f1020; font-weight:bold; border:none; border-radius:8px; cursor:pointer; font-size:16px; transition:0.2s; }
-button:hover { background:#ffaa44; }
-.result { margin-top:30px; padding:25px; background:#1a1d33; border-radius:12px; text-align:left; line-height:1.6; }
-.result h2 { text-align:center; color:#ffdd99; margin-bottom:15px; }
+button { margin-top:20px; padding:12px 24px; background:#ff99cc; color:#ffffff; font-weight:bold; border:none; border-radius:8px; cursor:pointer; font-size:16px; transition:0.2s; }
+button:hover { background:#ffb3dd; }
+.result { margin-top:30px; padding:25px; background:#3b1f58; border-radius:12px; text-align:left; line-height:1.6; }
+.result h2 { text-align:center; color:#ff77cc; margin-bottom:15px; text-shadow: 1px 1px 5px #55297a; }
 .result .info { display:flex; justify-content:space-around; flex-wrap:wrap; font-weight:bold; margin-bottom:15px; }
-.result .info div { background:#2c2f4a; padding:10px 15px; border-radius:8px; margin:5px; }
+.result .info div { background:#55297a; padding:10px 15px; border-radius:8px; margin:5px; }
 .result .phase { font-style:italic; color:#a0c4ff; }
 .result .light { color:#a0ffb0; margin-top:12px; }
 .result .dark { color:#ff8080; margin-top:8px; }
-.result .share { display:block; margin-top:20px; text-align:center; background:#1e90ff; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:bold; transition:0.2s; }
-.result .share:hover { background:#3399ff; }
+.result .share { display:block; margin-top:20px; text-align:center; background:#ff77cc; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:bold; transition:0.2s; }
+.result .share:hover { background:#ff99cc; }
 </style>
 </head>
 <body>
@@ -82,6 +105,7 @@ button:hover { background:#ffaa44; }
 </div>
 
 <script>
+// 星座データ
 const zodiacData = {
 aries:{name:"牡羊座",light:"道を切り開く先導者。",dark:"衝動が大切なものを失わせる。"},
 taurus:{name:"牡牛座",light:"揺るがぬ守護者。",dark:"執着が変化を拒む。"},
@@ -97,30 +121,49 @@ aquarius:{name:"水瓶座",light:"世界を変える革命家。",dark:"理解�
 pisces:{name:"魚座",light:"魂を癒す共鳴者。",dark:"他人に呑み込まれる。"}
 };
 
+// 星座期間
 const zodiacDates = {
-aries:["3月21日","4月19日"], taurus:["4月20日","5月20"], gemini:["5月21日","6月21日"],
-cancer:["6月22日","7月22日"], leo:["7月23日","8月22日"], virgo:["8月23日","9月22日"],
-libra:["9月23日","10月23日"], scorpio:["10月24日","11月22日"], sagittarius:["11月23日","12月21日"],
-capricorn:["12月22日","1月19日"], aquarius:["1月20日","2月18日"], pisces:["2月19日","3月20日"]
+aries:["3月21日","4月19日"], taurus:["4月20日","5月20"], gemini:["5月21日","6月21"],
+cancer:["6月22日","7月22"], leo:["7月23日","8月22"], virgo:["8月23日","9月22"],
+libra:["9月23日","10月23"], scorpio:["10月24日","11月22"], sagittarius:["11月23日","12月21"],
+capricorn:["12月22日","1月19"], aquarius:["1月20","2月18"], pisces:["2月19","3月20"]
 };
 
-// 性格ポイントマップ
-const personalityMap = {
-"衝動的": {aries:3, leo:1, sagittarius:2}, "戦いを恐れない": {aries:2, leo:3},
-"頑固": {taurus:3, capricorn:1}, "守るべきものがある": {taurus:2, cancer:1},
-"二面性がある": {gemini:3, libra:1}, "情報通": {gemini:2, aquarius:1},
-"仲間思い": {cancer:3, pisces:1}, "傷つきやすい": {cancer:2, pisces:2},
-"誇り高い": {leo:3, aries:1}, "注目されたい": {leo:2, sagittarius:1},
-"完璧主義": {virgo:3, capricorn:1}, "分析型": {virgo:2, aquarius:1},
-"バランス重視": {libra:3, gemini:1}, "平和主義": {libra:2, pisces:1},
-"執着心が強い": {scorpio:3, capricorn:1}, "秘密を抱えている": {scorpio:2, pisces:1},
-"自由奔放": {sagittarius:3, aries:1}, "理想を追う": {sagittarius:2, leo:1},
-"責任感が強い": {capricorn:3, taurus:1}, "野心家": {capricorn:2, leo:1},
-"個性的": {aquarius:3, gemini:1}, "革新的": {aquarius:2, aries:1},
-"共感力が高い": {pisces:3, cancer:1}, "自己犠牲的": {pisces:2, cancer:1}
-};
+// 名前根拠で月日割り当て
+function assignBirthdayByName(name){
+  const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
+  let month = (name.length % 12) + 1;
+  let points = 0;
+  for(let ch of name){
+    if(ch.match(/[\u3040-\u309F]/)) points+=1;
+    else if(ch.match(/[\u30A0-\u30FF]/)) points+=2;
+    else if(ch.match(/[\u4E00-\u9FFF]/)) points+=3;
+  }
+  let day = (points % daysInMonth[month-1]) + 1;
+  return {month, day};
+}
 
-// 季節マップ
+// 月日→星座判定
+function getZodiacFromDate(month, day){
+  for(let z in zodiacDates){
+    let start = zodiacDates[z][0].match(/\d+/g).map(Number);
+    let end   = zodiacDates[z][1].match(/\d+/g).map(Number);
+    let sMonth = start[0], sDay = start[1];
+    let eMonth = end[0], eDay = end[1];
+    if(sMonth < eMonth || (sMonth===eMonth && sDay<=eDay)){
+      if((month>sMonth || (month===sMonth && day>=sDay)) && (month<eMonth || (month===eMonth && day<=eDay))){
+        return z;
+      }
+    } else {
+      if((month>sMonth || (month===sMonth && day>=sDay)) || (month<eMonth || (month===eMonth && day<=eDay))){
+        return z;
+      }
+    }
+  }
+  return "aries";
+}
+
+// 季節
 const seasons = { "春":[3,4,5], "夏":[6,7,8], "秋":[9,10,11], "冬":[12,1,2], "なし":[] };
 
 // 季節心理フェーズ
@@ -135,35 +178,6 @@ const phases = [
 {phase:"冬極",range:[{month:12,day:22},{month:2,day:18}]}
 ];
 
-// 名前根拠で月日を割り当て
-function assignBirthdayByName(name){
-  const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
-  let month = (name.length % 12) + 1;
-  let points = 0;
-  for(let ch of name){
-    if(ch.match(/[\u3040-\u309F]/)) points+=1;
-    else if(ch.match(/[\u30A0-\u30FF]/)) points+=2;
-    else if(ch.match(/[\u4E00-\u9FFF]/)) points+=3;
-  }
-  let day = (points % daysInMonth[month-1]) + 1;
-  return {month, day};
-}
-
-// 性格→星座ポイント合算
-function calculateZodiacFromPersonality(selected){
-  let totalPoints = {};
-  selected.forEach(p=>{
-    if(personalityMap[p]){
-      for(let z in personalityMap[p]){
-        totalPoints[z] = (totalPoints[z]||0) + personalityMap[p][z];
-      }
-    }
-  });
-  let max = Object.keys(totalPoints).reduce((a,b)=> totalPoints[a]>=totalPoints[b]?a:b);
-  return max;
-}
-
-// 季節調整
 function adjustMonthBySeason(month, seasonSelected){
   if(seasonSelected==="なし") return month;
   const seasonMonths = seasons[seasonSelected];
@@ -173,7 +187,6 @@ function adjustMonthBySeason(month, seasonSelected){
   return month;
 }
 
-// 季節心理フェーズ判定
 function getPhase(month,day){
   for(let i=0;i<phases.length;i++){
     let r=phases[i].range;
@@ -195,10 +208,9 @@ function diagnose(){
   if(checks.length<1){alert("性格を選んでください");return;}
   const seasonSelected = document.getElementById("season").value;
 
-  const zodiac = calculateZodiacFromPersonality(Array.from(checks).map(c=>c.value));
   let {month,day} = assignBirthdayByName(name);
   month = adjustMonthBySeason(month, seasonSelected);
-
+  const zodiac = getZodiacFromDate(month, day);
   const phase = getPhase(month,day);
   const birthdayStr = `${month}月${day}日`;
 
@@ -217,4 +229,5 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
