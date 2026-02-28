@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>星辰記録 ― 運命を背負う日</title>
+<style>
+body{
+background:#0d0f1a;
+color:#e6e6e6;
+font-family:serif;
+text-align:center;
+padding:30px;
+}
+.container{
+max-width:600px;
+margin:auto;
+}
+button{
+margin-top:20px;
+padding:10px 20px;
+background:#2c2f4a;
+color:white;
+border:none;
+cursor:pointer;
+}
+.result{
+margin-top:30px;
+padding:20px;
+background:#1a1d33;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>星辰記録</h1>
+<p>星は祝福を与え、同時に代償を刻む。</p>
+
+<input type="text" id="name" placeholder="キャラクター名"><br><br>
+
+<p>性格を3つ選んでください</p>
+<label><input type="checkbox" value="fire"> 衝動的</label>
+<label><input type="checkbox" value="fire"> 主人公気質</label>
+<label><input type="checkbox" value="earth"> 冷静</label>
+<label><input type="checkbox" value="earth"> 責任感が強い</label>
+<label><input type="checkbox" value="air"> 孤独</label>
+<label><input type="checkbox" value="air"> 天才肌</label>
+<label><input type="checkbox" value="water"> 執着心が強い</label>
+<label><input type="checkbox" value="water"> 自己犠牲的</label>
+
+<br>
+<button onclick="diagnose()">星を詠む</button>
+
+<div id="result" class="result"></div>
+</div>
+
+<script>
+const stars = {
+fire: {
+name:"戦火の星（牡羊座・獅子座・射手座）",
+light:"先陣を切る勇気と燃える意志。",
+dark:"衝動が大切なものを焼き尽くす危険。"
+},
+earth: {
+name:"断罪の星（牡牛座・乙女座・山羊座）",
+light:"揺るがぬ信念と現実を支える力。",
+dark:"融通の利かなさが孤立を招く。"
+},
+air: {
+name:"革命の星（双子座・天秤座・水瓶座）",
+light:"世界を変える知性と発想。",
+dark:"理解されぬ孤独を抱えやすい。"
+},
+water: {
+name:"深淵の星（蟹座・蠍座・魚座）",
+light:"他者の心に寄り添う共感力。",
+dark:"執着が自らを蝕む。"
+}
+};
+
+function diagnose(){
+const name = document.getElementById("name").value || "名もなき者";
+const checks = document.querySelectorAll("input[type=checkbox]:checked");
+
+if(checks.length < 1){
+alert("性格を選んでください");
+return;
+}
+
+let count = {fire:0, earth:0, air:0, water:0};
+
+checks.forEach(c=>{
+count[c.value]++;
+});
+
+let type = Object.keys(count).reduce((a,b)=> count[a] > count[b] ? a : b);
+
+const month = Math.floor(Math.random()*12)+1;
+const day = Math.floor(Math.random()*28)+1;
+
+document.getElementById("result").innerHTML = `
+<h2>${name}の星辰記録</h2>
+<p><strong>${month}月${day}日生まれ</strong></p>
+<p><strong>${stars[type].name}</strong></p>
+<hr>
+<p>【光の資質】<br>${stars[type].light}</p>
+<p>【闇の因子】<br>${stars[type].dark}</p>
+<br>
+<a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(name+"は"+month+"月"+day+"日生まれ。"+stars[type].name+"の祝福と代償を背負う。")}" target="_blank">
+結果をXでシェア
+</a>
+`;
+}
+</script>
+
+</body>
+</html>
