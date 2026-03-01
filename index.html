@@ -2134,6 +2134,22 @@ function diagnose(){
   if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
   if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
 
+function resetDiagnosis(){
+  // チェックボックスを全部外す
+  document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
+  // カウンターをリセット
+  document.getElementById("checkCount").textContent = "0";
+  // 名前欄をクリア
+  document.getElementById("name").value = "";
+  // 結果を非表示
+  document.getElementById("result").innerHTML = "";
+  // ページトップへ
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+  
+
   // ①性格から星座を決める
   const selectedTraits = [...checks].map(c => c.value);
   const zodiacScores = {};
@@ -2299,6 +2315,7 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
 </script>
 </body>
 </html>
+
 
 
 
