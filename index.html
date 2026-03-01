@@ -2156,11 +2156,101 @@ function diagnose(){
     }
   }
 
+function generateResultImage(name, birthdayStr, zodiacName, lightMsg, darkMsg) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 800;
+  canvas.height = 450;
+  const ctx = canvas.getContext("2d");
+
+  // 背景グラデーション
+  const grad = ctx.createLinearGradient(0, 0, 800, 450);
+  grad.addColorStop(0, "#2e1a47");
+  grad.addColorStop(1, "#4b2e7c");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 800, 450);
+
+  // 星のドット
+  ctx.fillStyle = "rgba(255,255,255,0.15)";
+  for(let i = 0; i < 80; i++){
+    const x = Math.random() * 800;
+    const y = Math.random() * 450;
+    ctx.beginPath();
+    ctx.arc(x, y, 1, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // タイトル
+  ctx.fillStyle = "#ff77cc";
+  ctx.font = "bold 28px serif";
+  ctx.textAlign = "center";
+  ctx.fillText("キャラたん！誕生日診断", 400, 50);
+
+  // キャラ名
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 36px serif";
+  ctx.fillText(name, 400, 110);
+
+  // 誕生日・星座
+  ctx.fillStyle = "#cc99ff";
+  ctx.font = "24px serif";
+  ctx.fillText(`${birthdayStr}生まれ　${zodiacName}`, 400, 160);
+
+  // 区切り線
+  ctx.strokeStyle = "#55297a";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(60, 185);
+  ctx.lineTo(740, 185);
+  ctx.stroke();
+
+  // 光メッセージ
+  ctx.fillStyle = "#a0ffb0";
+  ctx.font = "18px serif";
+  ctx.textAlign = "left";
+  ctx.fillText("🌞【光】", 60, 230);
+  wrapText(ctx, lightMsg, 60, 260, 680, 28);
+
+  // 闇メッセージ
+  ctx.fillStyle = "#ff8080";
+  ctx.fillText("🌑【闇】", 60, 330);
+  wrapText(ctx, darkMsg, 60, 360, 680, 28);
+
+  // サイトURL
+  ctx.fillStyle = "#b0a0cc";
+  ctx.font = "16px serif";
+  ctx.textAlign = "center";
+  ctx.fillText("https://star-creater-bonbon.github.io/charatan/", 400, 430);
+
+  return canvas.toDataURL("image/png");
+}
+
+// テキスト折り返し関数
+function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+  const chars = text.split("");
+  let line = "";
+  for(let i = 0; i < chars.length; i++){
+    const testLine = line + chars[i];
+    if(ctx.measureText(testLine).width > maxWidth){
+      ctx.fillText(line, x, y);
+      line = chars[i];
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, y);
+}
+  
   const birthdayStr = `${month}月${day}日`;
   const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
   const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}。光と闇を併せ持つ存在。`;
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
 
+// 画像生成
+const lightMsg = dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light;
+const darkMsg = dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark;
+const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].name, lightMsg, darkMsg);
+  
   document.getElementById("result").innerHTML=`
     <h2>${name} の誕生日診断</h2>
     <div class="info">
@@ -2172,9 +2262,16 @@ function diagnose(){
     <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
   `;
 }
+  <a class="share" 
+   href="${imageDataUrl}" 
+   download="charatan_${name}.png" 
+   style="background:#7755cc; margin-top:10px;">
+  📷 画像をダウンロード
+</a>
 </script>
 </body>
 </html>
+
 
 
 
