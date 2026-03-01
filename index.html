@@ -190,6 +190,18 @@ button:hover {
   .result .info div { padding: 18px 20px; }
   .result .share { font-size: 28px; padding: 18px 22px; }
 }
+  .counter {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #cc99ff;
+}
+
+.counter span {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff77cc;
+}
 </style>
 </head>
 <body>
@@ -204,8 +216,8 @@ button:hover {
   名前の漢字から季節を読み取る（春・夏・秋・冬）
 </label>
 
-  
 <p>性格を5〜7個選んでください</p>
+<p class="counter">現在 <span id="checkCount">0</span> 個選択中</p>
 <div class="characteristics">
   <label><input type="checkbox" value="謎めいている">謎めいている</label>
   <label><input type="checkbox" value="使命に生きる">使命に生きる</label>
@@ -262,7 +274,12 @@ button:hover {
 <button onclick="diagnose()">誕生日を導き出す</button>
 <div id="result" class="result"></div>
 </div>
-
+  
+<button onclick="resetDiagnosis()" 
+  style="background:#55297a; margin-top:10px;">
+  🔄 やり直す
+</button>
+  
       <div style="margin-top:25px; padding-top:20px; border-top:1px solid #55297a; font-size:0.85em; color:#b0a0cc; line-height:2.0;">
       <p style="margin-bottom:8px; color:#cc99ff;">【このツールでの星座の区分】</p>
       牡羊座：3/21〜4/19　牡牛座：4/20〜5/20　双子座：5/21〜6/21<br>
@@ -2099,13 +2116,15 @@ const traitScores = {
 // }
   
 // チェックボックスの上限管理
-document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb => {
+  document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb => {
   cb.addEventListener("change", function(){
     const checked = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
     if(checked.length > 7){
       this.checked = false;
       alert("性格は7つまでにしてください");
     }
+    document.getElementById("checkCount").textContent = 
+      document.querySelectorAll(".characteristics input[type=checkbox]:checked").length;
   });
 });
   
@@ -2268,6 +2287,7 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
     <p class="light">🌞【光】${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}</p>
     <p class="dark">🌑【闇】${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}</p>
     <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
+    
     <a class="share" 
        href="${imageDataUrl}" 
        download="charatan_${name}.png" 
@@ -2279,6 +2299,7 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
 </script>
 </body>
 </html>
+
 
 
 
