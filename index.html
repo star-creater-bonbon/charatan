@@ -2174,7 +2174,7 @@ function diagnose(){
   const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
   const lightMsg = dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light;
   const darkMsg = dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark;
-  const tweetText = `【キャラたん診断】\n${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}\n\n🌞${lightMsg}\n🌑${darkMsg}\n\nあなたのキャラの誕生日は？`;
+  const tweetText = `【キャラたん診断】\n${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}\n\n🌞${lightMsg}\n🌑${darkMsg}\n\nあなたのキャラの誕生日は？`;#キャラたん診断`;
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
   const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].name, lightMsg, darkMsg);
 
@@ -2289,6 +2289,7 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight){
 </script>
 </body>
 </html>
+
 
 
 
