@@ -149,11 +149,6 @@ button:hover {
   border-radius: 10px; 
 }
 
-.result .phase { 
-  font-style: italic; 
-  color: #a0c4ff; 
-}
-
 .result .light { 
   color: #a0ffb0; 
   margin-top: 15px; 
@@ -293,18 +288,6 @@ cancer:["6月22日","7月22"], leo:["7月23日","8月22"], virgo:["8月23日","9
 libra:["9月23日","10月23"], scorpio:["10月24日","11月22"], sagittarius:["11月23日","12月21"],
 capricorn:["12月22日","1月19"], aquarius:["1月20","2月18"], pisces:["2月19","3月20"]
 };
-
-const seasons = { "春":[3,4,5], "夏":[6,7,8], "秋":[9,10,11], "冬":[12,1,2], "なし":[] };
-const phases = [
-{phase:"早春",range:[{month:2,day:19},{month:3,day:20}]},
-{phase:"春盛",range:[{month:3,day:21},{month:5,day:15}]},
-{phase:"初夏",range:[{month:5,day:16},{month:6,day:21}]},
-{phase:"盛夏",range:[{month:6,day:22},{month:8,day:22}]},
-{phase:"初秋",range:[{month:8,day:23},{month:9,day:30}]},
-{phase:"秋深",range:[{month:10,day:1},{month:11,day:22}]},
-{phase:"晩秋〜初冬",range:[{month:11,day:23},{month:12,day:21}]},
-{phase:"冬極",range:[{month:12,day:22},{month:2,day:18}]}
-];
 
 // 366日分の光と闇のメッセージ
 // キー形式: "月/日" (例: "3/21", "12/1")
@@ -1892,29 +1875,6 @@ function getZodiacFromDate(month, day){
   return "aries";
 }
 
-function adjustMonthBySeason(month, seasonSelected){
-  if(seasonSelected==="なし") return month;
-  const seasonMonths = seasons[seasonSelected];
-  if(!seasonMonths.includes(month)){
-    return seasonMonths[Math.floor(Math.random()*seasonMonths.length)];
-  }
-  return month;
-}
-
-function getPhase(month,day){
-  for(let i=0;i<phases.length;i++){
-    let r=phases[i].range;
-    if((month>r[0].month || (month===r[0].month && day>=r[0].day)) &&
-       (month<r[1].month || (month===r[1].month && day<=r[1].day))){
-      return phases[i].phase;
-    }
-    if(phases[i].phase==="冬極" &&
-       ((month===12 && day>=22)||(month===1)||(month===2 && day<=18))){
-      return "冬極";
-    }
-  }
-  return "";
-}
 // 性格ごとの星座ポイント表
 // 各性格に3〜4星座、合計ポイントは星座によって差をつける
 // 3=強い関連、2=中程度、1=弱い関連
@@ -2183,7 +2143,6 @@ if(useSeasonKanji){
   // ②次に名前でその星座の範囲内の日付を決める
   const {month, day} = assignBirthdayByName(name, zodiac);
 
-  const phase = getPhase(month, day);
   const birthdayStr = `${month}月${day}日`;
 
   const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
@@ -2195,7 +2154,6 @@ if(useSeasonKanji){
     <div class="info">
       <div>誕生日: <strong>${birthdayStr}</strong></div>
       <div>星座: <strong>${zodiacData[zodiac].name}</strong></div>
-      <div class="phase">季節心理: <strong>${phase}</strong></div>
     </div>
     <p class="light">🌞【光】${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}</p>
     <p class="dark">🌑【闇】${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}</p>
@@ -2205,6 +2163,7 @@ if(useSeasonKanji){
 </script>
 </body>
 </html>
+
 
 
 
