@@ -2243,7 +2243,15 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight){
   
   const birthdayStr = `${month}月${day}日`;
   const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
-  const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}。光と闇を併せ持つ存在。`;
+  
+  const tweetText = `【キャラたん診断】
+${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}
+
+🌞${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}
+🌑${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}
+
+あなたのキャラの誕生日は？`;
+  
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
 
 // 画像生成
@@ -2271,6 +2279,7 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
 </script>
 </body>
 </html>
+
 
 
 
