@@ -2100,7 +2100,7 @@ const traitScores = {
 
 function diagnose(){
   const name = document.getElementById("name").value || "名もなき者";
-  const checks = document.querySelectorAll("input[type=checkbox]:checked");
+  const checks = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
   if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
   if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
 
@@ -2164,6 +2164,7 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
 
 
