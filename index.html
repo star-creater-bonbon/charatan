@@ -2097,7 +2097,18 @@ const traitScores = {
 //   // 最高得点の星座を返す
 //   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
 // }
-
+  
+// チェックボックスの上限管理
+document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb => {
+  cb.addEventListener("change", function(){
+    const checked = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
+    if(checked.length > 7){
+      this.checked = false;
+      alert("性格は7つまでにしてください");
+    }
+  });
+});
+  
 function diagnose(){
   const name = document.getElementById("name").value || "名もなき者";
   const checks = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
@@ -2164,6 +2175,7 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
 
 
