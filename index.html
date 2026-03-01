@@ -2128,7 +2128,8 @@ function diagnose(){
   const checks = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
   if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
   if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
-
+}
+  
 function resetDiagnosis(){
   // チェックボックスを全部外す
   document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb => {
@@ -2315,6 +2316,7 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
 </script>
 </body>
 </html>
+
 
 
 
