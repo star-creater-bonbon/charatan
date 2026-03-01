@@ -2156,7 +2156,7 @@ function diagnose(){
     }
   }
 
-function generateResultImage(name, birthdayStr, zodiacName, lightMsg, darkMsg) {
+  function generateResultImage(name, birthdayStr, zodiacName, lightMsg, darkMsg) {
   const canvas = document.createElement("canvas");
   canvas.width = 800;
   canvas.height = 450;
@@ -2250,8 +2250,8 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight){
 const lightMsg = dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light;
 const darkMsg = dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark;
 const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].name, lightMsg, darkMsg);
-  
-  document.getElementById("result").innerHTML=`
+
+　document.getElementById("result").innerHTML=`
     <h2>${name} の誕生日診断</h2>
     <div class="info">
       <div>誕生日: <strong>${birthdayStr}</strong></div>
@@ -2260,16 +2260,17 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
     <p class="light">🌞【光】${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}</p>
     <p class="dark">🌑【闇】${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}</p>
     <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
+    <a class="share" 
+       href="${imageDataUrl}" 
+       download="charatan_${name}.png" 
+       style="background:#7755cc; margin-top:10px;">
+      📷 画像をダウンロード
+    </a>
   `;
 }
-  <a class="share" 
-   href="${imageDataUrl}" 
-   download="charatan_${name}.png" 
-   style="background:#7755cc; margin-top:10px;">
-  📷 画像をダウンロード
-</a>
 </script>
 </body>
 </html>
+
 
 
