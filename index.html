@@ -275,11 +275,6 @@ button:hover {
 <div id="result" class="result"></div>
 </div>
   
-<button onclick="resetDiagnosis()" 
-  style="background:#55297a; margin-top:10px;">
-  🔄 やり直す
-</button>
-  
       <div style="margin-top:25px; padding-top:20px; border-top:1px solid #55297a; font-size:0.85em; color:#b0a0cc; line-height:2.0;">
       <p style="margin-bottom:8px; color:#cc99ff;">【このツールでの星座の区分】</p>
       牡羊座：3/21〜4/19　牡牛座：4/20〜5/20　双子座：5/21〜6/21<br>
@@ -2303,6 +2298,11 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
     <p class="light">🌞【光】${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}</p>
     <p class="dark">🌑【闇】${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}</p>
     <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
+
+    <button onclick="resetDiagnosis()" 
+  style="background:#55297a; margin-top:10px;">
+  🔄 やり直す
+</button>
     
     <a class="share" 
        href="${imageDataUrl}" 
@@ -2315,6 +2315,7 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
 </script>
 </body>
 </html>
+
 
 
 
