@@ -2108,53 +2108,6 @@ document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb =>
     }
   });
 });
-  
-function diagnose(){
-  const name = document.getElementById("name").value || "名もなき者";
-  const checks = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
-  if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
-  if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
-
-  // ①性格から星座を決める
-  const selectedTraits = [...checks].map(c => c.value);
-  const zodiacScores = {};
-  for(const trait of selectedTraits){
-    const points = traitScores[trait];
-    if(!points) continue;
-    for(const [z, point] of Object.entries(points)){
-      zodiacScores[z] = (zodiacScores[z] || 0) + point;
-    }
-  }
-  let zodiac = Object.entries(zodiacScores).sort((a,b) => b[1]-a[1])[0][0];
-
-  // ②名前でその星座の範囲内の日付を決める
-  let {month, day} = assignBirthdayByName(name, zodiac);
-
-  // ③季節漢字チェック（チェックボックスがオンの時だけ）
-  const useSeasonKanji = document.getElementById("useSeasonKanji").checked;
-  if(useSeasonKanji){
-    const seasonKanji = {
-      "春": { month: 4 },
-      "夏": { month: 8 },
-      "秋": { month: null, range: [10, 11] },
-      "冬": { month: 12 }
-    };
-    for(const ch of name){
-      if(seasonKanji[ch]){
-        const sk = seasonKanji[ch];
-        let pts = 0;
-        for(let c of name) pts += c.charCodeAt(0);
-        const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
-        if(sk.range){
-          month = sk.range[pts % sk.range.length];
-        } else {
-          month = sk.month;
-        }
-        day = (pts % daysInMonth[month-1]) + 1;
-        zodiac = getZodiacFromDate(month, day);
-      }
-    }
-  }
 
 function generateResultImage(name, birthdayStr, zodiacName, lightMsg, darkMsg) {
   const canvas = document.createElement("canvas");
@@ -2241,6 +2194,53 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight){
   ctx.fillText(line, x, y);
 }
   
+function diagnose(){
+  const name = document.getElementById("name").value || "名もなき者";
+  const checks = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
+  if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
+  if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
+
+  // ①性格から星座を決める
+  const selectedTraits = [...checks].map(c => c.value);
+  const zodiacScores = {};
+  for(const trait of selectedTraits){
+    const points = traitScores[trait];
+    if(!points) continue;
+    for(const [z, point] of Object.entries(points)){
+      zodiacScores[z] = (zodiacScores[z] || 0) + point;
+    }
+  }
+  let zodiac = Object.entries(zodiacScores).sort((a,b) => b[1]-a[1])[0][0];
+
+  // ②名前でその星座の範囲内の日付を決める
+  let {month, day} = assignBirthdayByName(name, zodiac);
+
+  // ③季節漢字チェック（チェックボックスがオンの時だけ）
+  const useSeasonKanji = document.getElementById("useSeasonKanji").checked;
+  if(useSeasonKanji){
+    const seasonKanji = {
+      "春": { month: 4 },
+      "夏": { month: 8 },
+      "秋": { month: null, range: [10, 11] },
+      "冬": { month: 12 }
+    };
+    for(const ch of name){
+      if(seasonKanji[ch]){
+        const sk = seasonKanji[ch];
+        let pts = 0;
+        for(let c of name) pts += c.charCodeAt(0);
+        const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
+        if(sk.range){
+          month = sk.range[pts % sk.range.length];
+        } else {
+          month = sk.month;
+        }
+        day = (pts % daysInMonth[month-1]) + 1;
+        zodiac = getZodiacFromDate(month, day);
+      }
+    }
+  }
+  
   const birthdayStr = `${month}月${day}日`;
   const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
   const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}。光と闇を併せ持つ存在。`;
@@ -2271,6 +2271,7 @@ const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].n
 </script>
 </body>
 </html>
+
 
 
 
