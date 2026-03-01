@@ -204,7 +204,7 @@ button:hover {
 
 <input type="text" id="name" placeholder="キャラクター名"><br>
 
-<p>性格を5つ以上選んでください</p>
+<p>性格を5〜7個選んでください</p>
 <div class="characteristics">
   <label><input type="checkbox" value="謎めいている">謎めいている</label>
   <label><input type="checkbox" value="使命に生きる">使命に生きる</label>
@@ -2135,7 +2135,8 @@ const traitScores = {
 function diagnose(){
   const name = document.getElementById("name").value || "名もなき者";
   const checks = document.querySelectorAll("input[type=checkbox]:checked");
-  if(checks.length < 1){ alert("性格を選んでください"); return; }
+  if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
+　if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
   const seasonSelected = document.getElementById("season").value;
 
   // ①まず性格から星座を決める
@@ -2175,6 +2176,7 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
 
 
