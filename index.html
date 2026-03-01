@@ -2139,6 +2139,35 @@ function diagnose(){
 　if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
   const seasonSelected = document.getElementById("season").value;
 
+  // 季節漢字の強制
+const useSeasonKanji = document.getElementById("useSeasonKanji").checked;
+if(useSeasonKanji){
+  for(const ch of name){
+    if(seasonKanji[ch]){
+      const sk = seasonKanji[ch];
+      let forcedMonth;
+      if(sk.range){
+        // 秋は名前のポイントで10か11月を選ぶ
+        let pts = 0;
+        for(let c of name) pts += c.charCodeAt(0);
+        forcedMonth = sk.range[pts % sk.range.length];
+      } else {
+        forcedMonth = sk.month;
+      }
+      // その月の中でポイントで日にちを決める
+      const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
+      let pts = 0;
+      for(let c of name) pts += c.charCodeAt(0);
+      const forcedDay = (pts % daysInMonth[forcedMonth-1]) + 1;
+      // 月日と星座を上書き
+      month = forcedMonth;
+      day = forcedDay;
+      // 星座もその月日に合わせて上書き
+      zodiac = getZodiacFromDate(forcedMonth, forcedDay);
+    }
+  }
+}
+
   // ①まず性格から星座を決める
   const selectedTraits = [...checks].map(c => c.value);
   const zodiacScores = {};
@@ -2176,6 +2205,7 @@ function diagnose(){
 </script>
 </body>
 </html>
+
 
 
 
