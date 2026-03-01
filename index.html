@@ -2128,23 +2128,6 @@ function diagnose(){
   const checks = document.querySelectorAll(".characteristics input[type=checkbox]:checked");
   if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
   if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
-}
-  
-function resetDiagnosis(){
-  // チェックボックスを全部外す
-  document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb => {
-    cb.checked = false;
-  });
-  // カウンターをリセット
-  document.getElementById("checkCount").textContent = "0";
-  // 名前欄をクリア
-  document.getElementById("name").value = "";
-  // 結果を非表示
-  document.getElementById("result").innerHTML = "";
-  // ページトップへ
-  window.scrollTo({top: 0, behavior: "smooth"});
-}
-  
 
   // ①性格から星座を決める
   const selectedTraits = [...checks].map(c => c.value);
@@ -2161,7 +2144,7 @@ function resetDiagnosis(){
   // ②名前でその星座の範囲内の日付を決める
   let {month, day} = assignBirthdayByName(name, zodiac);
 
-  // ③季節漢字チェック（チェックボックスがオンの時だけ）
+  // ③季節漢字チェック
   const useSeasonKanji = document.getElementById("useSeasonKanji").checked;
   if(useSeasonKanji){
     const seasonKanji = {
@@ -2187,7 +2170,39 @@ function resetDiagnosis(){
     }
   }
 
-  function generateResultImage(name, birthdayStr, zodiacName, lightMsg, darkMsg) {
+  const birthdayStr = `${month}月${day}日`;
+  const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
+  const lightMsg = dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light;
+  const darkMsg = dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark;
+  const tweetText = `【キャラたん診断】\n${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}\n\n🌞${lightMsg}\n🌑${darkMsg}\n\nあなたのキャラの誕生日は？`;
+  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
+  const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].name, lightMsg, darkMsg);
+
+  document.getElementById("result").innerHTML=`
+    <h2>${name} の誕生日診断</h2>
+    <div class="info">
+      <div>誕生日: <strong>${birthdayStr}</strong></div>
+      <div>星座: <strong>${zodiacData[zodiac].name}</strong></div>
+    </div>
+    <p class="light">🌞【光】${lightMsg}</p>
+    <p class="dark">🌑【闇】${darkMsg}</p>
+    <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
+    <a class="share" href="${imageDataUrl}" download="charatan_${name}.png" style="background:#7755cc; margin-top:10px;">📷 画像をダウンロード</a>
+    <button onclick="resetDiagnosis()" style="background:#55297a; margin-top:10px; font-size:18px; width:100%; padding:16px 0; border:none; border-radius:10px; color:white; cursor:pointer;">🔄 やり直す</button>
+  `;
+}
+
+function resetDiagnosis(){
+  document.querySelectorAll(".characteristics input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
+  document.getElementById("checkCount").textContent = "0";
+  document.getElementById("name").value = "";
+  document.getElementById("result").innerHTML = "";
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function generateResultImage(name, birthdayStr, zodiacName, lightMsg, darkMsg) {
   const canvas = document.createElement("canvas");
   canvas.width = 800;
   canvas.height = 450;
@@ -2271,51 +2286,10 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight){
   }
   ctx.fillText(line, x, y);
 }
-  
-  const birthdayStr = `${month}月${day}日`;
-  const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
-  
-  const tweetText = `【キャラたん診断】
-${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}
-
-🌞${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}
-🌑${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}
-
-あなたのキャラの誕生日は？`;
-  
-  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
-
-// 画像生成
-const lightMsg = dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light;
-const darkMsg = dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark;
-const imageDataUrl = generateResultImage(name, birthdayStr, zodiacData[zodiac].name, lightMsg, darkMsg);
-
-　document.getElementById("result").innerHTML=`
-    <h2>${name} の誕生日診断</h2>
-    <div class="info">
-      <div>誕生日: <strong>${birthdayStr}</strong></div>
-      <div>星座: <strong>${zodiacData[zodiac].name}</strong></div>
-    </div>
-    <p class="light">🌞【光】${dailyMessages[month+"/"+day]?.light || zodiacData[zodiac].light}</p>
-    <p class="dark">🌑【闇】${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}</p>
-    <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
-
-    <button onclick="resetDiagnosis()" 
-  style="background:#55297a; margin-top:10px;">
-  🔄 やり直す
-</button>
-    
-    <a class="share" 
-       href="${imageDataUrl}" 
-       download="charatan_${name}.png" 
-       style="background:#7755cc; margin-top:10px;">
-      📷 画像をダウンロード
-    </a>
-  `;
-}
 </script>
 </body>
 </html>
+
 
 
 
