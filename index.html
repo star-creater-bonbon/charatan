@@ -198,7 +198,10 @@ button:hover {
 <p class="description">キャラクターの性格と名前から誕生日・星座・季節心理フェーズを導き出すツールです。</p>
 
 <input type="text" id="name" placeholder="キャラクター名"><br>
-
+<label style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+  <input type="checkbox" id="useSeasonKanji" style="transform:scale(1.5);">
+  名前の漢字から季節を読み取る（春・夏・秋・冬）
+</label>
   <p>生まれる季節を選択（こだわらない場合は「なし」）</p>
 <select id="season">
   <option value="なし">なし</option>
@@ -2097,39 +2100,9 @@ function diagnose(){
   const name = document.getElementById("name").value || "名もなき者";
   const checks = document.querySelectorAll("input[type=checkbox]:checked");
   if(checks.length < 5){ alert("性格を5つ以上選んでください"); return; }
-　if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
-  const seasonSelected = document.getElementById("season").value;
+  if(checks.length > 7){ alert("性格は7つまでにしてください"); return; }
 
-  // 季節漢字の強制
-const useSeasonKanji = document.getElementById("useSeasonKanji").checked;
-if(useSeasonKanji){
-  for(const ch of name){
-    if(seasonKanji[ch]){
-      const sk = seasonKanji[ch];
-      let forcedMonth;
-      if(sk.range){
-        // 秋は名前のポイントで10か11月を選ぶ
-        let pts = 0;
-        for(let c of name) pts += c.charCodeAt(0);
-        forcedMonth = sk.range[pts % sk.range.length];
-      } else {
-        forcedMonth = sk.month;
-      }
-      // その月の中でポイントで日にちを決める
-      const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
-      let pts = 0;
-      for(let c of name) pts += c.charCodeAt(0);
-      const forcedDay = (pts % daysInMonth[forcedMonth-1]) + 1;
-      // 月日と星座を上書き
-      month = forcedMonth;
-      day = forcedDay;
-      // 星座もその月日に合わせて上書き
-      zodiac = getZodiacFromDate(forcedMonth, forcedDay);
-    }
-  }
-}
-
-  // ①まず性格から星座を決める
+  // ①性格から星座を決める
   const selectedTraits = [...checks].map(c => c.value);
   const zodiacScores = {};
   for(const trait of selectedTraits){
@@ -2139,15 +2112,40 @@ if(useSeasonKanji){
       zodiacScores[z] = (zodiacScores[z] || 0) + point;
     }
   }
-  const zodiac = Object.entries(zodiacScores).sort((a,b) => b[1]-a[1])[0][0];
+  let zodiac = Object.entries(zodiacScores).sort((a,b) => b[1]-a[1])[0][0];
 
-  // ②次に名前でその星座の範囲内の日付を決める
-  const {month, day} = assignBirthdayByName(name, zodiac);
+  // ②名前でその星座の範囲内の日付を決める
+  let {month, day} = assignBirthdayByName(name, zodiac);
+
+  // ③季節漢字チェック（チェックボックスがオンの時だけ）
+  const useSeasonKanji = document.getElementById("useSeasonKanji").checked;
+  if(useSeasonKanji){
+    const seasonKanji = {
+      "春": { month: 4 },
+      "夏": { month: 8 },
+      "秋": { month: null, range: [10, 11] },
+      "冬": { month: 12 }
+    };
+    for(const ch of name){
+      if(seasonKanji[ch]){
+        const sk = seasonKanji[ch];
+        let pts = 0;
+        for(let c of name) pts += c.charCodeAt(0);
+        const daysInMonth = [31,29,31,30,31,30,31,31,30,31,30,31];
+        if(sk.range){
+          month = sk.range[pts % sk.range.length];
+        } else {
+          month = sk.month;
+        }
+        day = (pts % daysInMonth[month-1]) + 1;
+        zodiac = getZodiacFromDate(month, day);
+      }
+    }
+  }
 
   const birthdayStr = `${month}月${day}日`;
-
   const siteUrl = "https://star-creater-bonbon.github.io/charatan/";
-  const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}(${phase})。光と闇を併せ持つ存在。`;
+  const tweetText = `${name}は${birthdayStr}生まれの${zodiacData[zodiac].name}。光と闇を併せ持つ存在。`;
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + " " + siteUrl)}`;
 
   document.getElementById("result").innerHTML=`
@@ -2160,17 +2158,18 @@ if(useSeasonKanji){
     <p class="dark">🌑【闇】${dailyMessages[month+"/"+day]?.dark || zodiacData[zodiac].dark}</p>
     <a class="share" href="${shareUrl}" target="_blank">Xでシェア</a>
     <div style="margin-top:25px; padding-top:20px; border-top:1px solid #55297a; font-size:0.85em; color:#b0a0cc; line-height:2.0;">
-  <p style="margin-bottom:8px; color:#cc99ff;">【このツールでの星座の区分】</p>
-  牡羊座：3/21〜4/19　牡牛座：4/20〜5/20　双子座：5/21〜6/21<br>
-  蟹座：6/22〜7/22　獅子座：7/23〜8/22　乙女座：8/23〜9/22<br>
-  天秤座：9/23〜10/22　蠍座：10/23〜11/21　射手座：11/22〜12/21<br>
-  山羊座：12/22〜1/20　水瓶座：1/21〜2/18　魚座：2/19〜3/20
-</div>
+      <p style="margin-bottom:8px; color:#cc99ff;">【このツールでの星座の区分】</p>
+      牡羊座：3/21〜4/19　牡牛座：4/20〜5/20　双子座：5/21〜6/21<br>
+      蟹座：6/22〜7/22　獅子座：7/23〜8/22　乙女座：8/23〜9/22<br>
+      天秤座：9/23〜10/22　蠍座：10/23〜11/21　射手座：11/22〜12/21<br>
+      山羊座：12/22〜1/20　水瓶座：1/21〜2/18　魚座：2/19〜3/20
+    </div>
   `;
 }
 </script>
 </body>
 </html>
+
 
 
 
