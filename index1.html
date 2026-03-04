@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>キャラクター誕生日占い</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- ★ AdSense審査が通ったら下のコメントを外す -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 40%, #0d1b4b 100%);
+  font-family: 'Hiragino Mincho ProN', Georgia, serif;
+  color: white; overflow-x: hidden;
+}
+canvas#stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+#app { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
+
+.header { text-align: center; margin-bottom: 28px; }
+.header .moon { font-size: 48px; margin-bottom: 8px; }
+.header h1 {
+  font-size: 26px; letter-spacing: .15em;
+  background: linear-gradient(90deg, #c9a0ff, #ffe0ff, #a0c4ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.header p { color: #b0a0cc; font-size: 13px; margin-top: 8px; letter-spacing: .1em; }
+
+.ad-box {
+  margin: 20px 0; text-align: center; min-height: 90px;
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(180,140,255,0.2); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #6050a0; font-size: 12px; letter-spacing: .1em;
+}
+input[type=text] {
+  width: 100%; background: rgba(255,255,255,.06);
+  border: 1px solid rgba(180,140,255,.3); border-radius: 10px;
+  padding: 12px 16px; color: white; font-size: 15px;
+  outline: none; letter-spacing: .05em; margin-bottom: 28px;
+  font-family: inherit;
+}
+input[type=text]::placeholder { color: #7060a0; }
+.label { display: block; font-size: 13px; color: #c9a0ff; letter-spacing: .1em; margin-bottom: 8px; }
+
+.group-title {
+  font-size: 12px; color: #a090cc; letter-spacing: .15em;
+  border-bottom: 1px solid rgba(180,140,255,.2);
+  padding-bottom: 6px; margin-bottom: 10px;
+}
+.keywords { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.kw {
+  padding: 7px 14px; border-radius: 20px; font-size: 13px;
+  cursor: pointer; letter-spacing: .05em; transition: all .2s;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(180,140,255,.2); color: #c0b0e0;
+  font-family: inherit;
+}
+.kw.on {
+  background: linear-gradient(135deg, #7b2ff7, #b44fff);
+  border-color: #c580ff; color: white;
+  box-shadow: 0 0 12px rgba(180,80,255,.4);
+  transform: scale(1.04);
+}
+.count { text-align: center; font-size: 12px; color: #9080b0; margin-bottom: 16px; }
+.count span { color: #c9a0ff; font-weight: bold; }
+.err { text-align: center; color: #ff8fa0; font-size: 13px; margin-bottom: 12px; }
+#btn {
+  display: block; width: 100%; padding: 16px; border-radius: 14px;
+  font-size: 16px; font-weight: bold; letter-spacing: .15em;
+  cursor: pointer; border: none;
+  background: linear-gradient(135deg, #6a0dad, #9b30ff, #6a0dad);
+  color: white; box-shadow: 0 0 30px rgba(150,60,255,.5);
+  transition: all .3s; font-family: inherit;
+}
+
+/* ── Result ── */
+@keyframes fadeIn { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }
+@keyframes glow   { 0%,100%{box-shadow:0 0 30px rgba(180,80,255,.4)} 50%{box-shadow:0 0 60px rgba(180,80,255,.8)} }
+#result {
+  display: none; background: rgba(255,255,255,.05);
+  border-radius: 20px; padding: 36px 28px; text-align: center;
+  backdrop-filter: blur(10px);
+  animation: fadeIn .8s ease, glow 3s ease infinite;
+}
+.res-sub  { color: #b0a0cc; font-size: 14px; margin-bottom: 4px; letter-spacing: .1em; }
+.res-symbol { font-size: 64px; margin-bottom: 8px; }
+.res-zodiac { font-size: 32px; margin: 0 0 4px; }
+.res-trait  { color: #c0b0d0; font-size: 13px; margin-bottom: 20px; letter-spacing: .1em; }
+
+.res-date-box { background: rgba(0,0,0,.3); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+.res-date-label { font-size: 12px; color: #9080b0; letter-spacing: .15em; margin-bottom: 6px; }
+.res-date   { font-size: 28px; font-weight: bold; letter-spacing: .1em; }
+.res-period { font-size: 12px; color: #9080b0; margin-top: 4px; }
+
+/* 光と闇 */
+.msg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+@media(max-width:480px){ .msg-grid { grid-template-columns: 1fr; } }
+.msg-box { border-radius: 12px; padding: 16px; text-align: left; }
+.msg-box.light {
+  background: linear-gradient(135deg, rgba(255,220,80,.08), rgba(255,180,60,.04));
+  border: 1px solid rgba(255,200,80,.25);
+}
+.msg-box.dark  {
+  background: linear-gradient(135deg, rgba(100,60,180,.15), rgba(60,20,120,.08));
+  border: 1px solid rgba(140,80,220,.25);
+}
+.msg-icon  { font-size: 20px; margin-bottom: 6px; }
+.msg-label { font-size: 10px; letter-spacing: .2em; margin-bottom: 8px; }
+.msg-box.light .msg-label { color: #e0b840; }
+.msg-box.dark  .msg-label { color: #a080e0; }
+.msg-text  { font-size: 13px; line-height: 1.9; }
+.msg-box.light .msg-text { color: #ffe8a0; }
+.msg-box.dark  .msg-text { color: #c0a0f0; }
+
+.res-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 24px; }
+.res-tag  { font-size: 12px; padding: 4px 10px; border-radius: 12px; }
+
+/* シェアボタン */
+.share-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+.share-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: 10px; font-size: 13px;
+  cursor: pointer; border: none; font-family: inherit;
+  letter-spacing: .05em; transition: all .2s;
+}
+.btn-x       { background: #000; color: white; border: 1px solid #333; }
+.btn-x:hover { background: #111; }
+.btn-img     { background: rgba(255,255,255,.08); color: #c9a0ff; border: 1px solid rgba(180,140,255,.3); }
+.btn-img:hover { background: rgba(255,255,255,.14); }
+.btn-url     { background: rgba(255,255,255,.08); color: #80d0ff; border: 1px solid rgba(100,180,255,.3); }
+.btn-url:hover { background: rgba(255,255,255,.14); }
+.share-toast {
+  display: none; font-size: 12px; color: #80e0b0;
+  text-align: center; margin-bottom: 8px; letter-spacing: .05em;
+}
+
+#resetBtn {
+  padding: 12px 32px; border-radius: 12px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(180,140,255,.3);
+  color: #c9a0ff; font-size: 14px; cursor: pointer;
+  letter-spacing: .1em; font-family: inherit;
+}
+
+/* 星座早見表 */
+.zodiac-table-wrap {
+  margin-top: 60px;
+  border-top: 1px solid rgba(180,140,255,.15);
+  padding-top: 36px;
+}
+.zodiac-table-title {
+  text-align: center; font-size: 13px; color: #9080b0;
+  letter-spacing: .2em; margin-bottom: 20px;
+}
+.zodiac-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+@media(max-width:480px){ .zodiac-grid { grid-template-columns: repeat(2,1fr); } }
+.zodiac-cell {
+  background: rgba(255,255,255,.04);
+  border-radius: 10px; padding: 10px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.zodiac-cell .z-sym { font-size: 20px; }
+.zodiac-cell .z-info .z-name  { font-size: 13px; color: #d0c0f0; letter-spacing: .05em; }
+.zodiac-cell .z-info .z-range { font-size: 11px; color: #8070a0; margin-top: 2px; }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div id="app">
+  <div class="header">
+    <div class="moon">🌙</div>
+    <h1>キャラクター誕生日占い</h1>
+    <p>星々があなたのキャラクターの生まれた日を告げる</p>
+  </div>
+
+  <!-- 広告枠① -->
+  <div class="ad-box">
+    <!-- ★ AdSense審査後に差し替える
+    <ins class="adsbygoogle" style="display:block"
+      data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+      data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+    広告スペース（ヘッダー下）
+  </div>
+
+  <div id="form">
+    <label class="label">✦ キャラクター名（任意）</label>
+    <input type="text" id="charName" placeholder="例：夜月 凛">
+    <div id="kwArea"></div>
+    <div class="count">選択中：<span id="cnt">0</span> 個 <span id="cntMsg">（3つ以上選んでください）</span></div>
+    <div class="err" id="errMsg"></div>
+    <button id="btn" onclick="analyze()">✦ 誕生日を占う ✦</button>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result">
+    <div id="resultCapture">
+      <div class="res-sub" id="rName"></div>
+      <div class="res-symbol" id="rSymbol"></div>
+      <h2 class="res-zodiac" id="rZodiac"></h2>
+      <p class="res-trait" id="rTrait"></p>
+      <div class="res-date-box">
+        <div class="res-date-label">✦ 推定誕生日</div>
+        <div class="res-date" id="rBirthday"></div>
+        <div class="res-period" id="rPeriod"></div>
+      </div>
+      <!-- 光と闇 -->
+      <div class="msg-grid">
+        <div class="msg-box light">
+          <div class="msg-icon">☀</div>
+          <div class="msg-label">光のメッセージ</div>
+          <div class="msg-text" id="rLight"></div>
+        </div>
+        <div class="msg-box dark">
+          <div class="msg-icon">🌑</div>
+          <div class="msg-label">闇のメッセージ</div>
+          <div class="msg-text" id="rDark"></div>
+        </div>
+      </div>
+      <div class="res-tags" id="rTags"></div>
+    </div>
+
+    <!-- シェアボタン -->
+    <div class="share-row">
+      <button class="share-btn btn-x" onclick="shareX()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Xでシェア
+      </button>
+      <button class="share-btn btn-img" onclick="downloadImg()">
+        📥 画像を保存
+      </button>
+      <button class="share-btn btn-url" onclick="copyUrl()">
+        🔗 URLをコピー
+      </button>
+    </div>
+    <div class="share-toast" id="toast">✓ コピーしました</div>
+
+    <button id="resetBtn" onclick="reset()">✦ もう一度占う</button>
+
+    <!-- 広告枠② -->
+    <div class="ad-box" style="margin-top:28px">
+      <!-- ★ AdSense審査後に差し替える
+      <ins class="adsbygoogle" style="display:block"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+        data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      -->
+      広告スペース（結果の下）
+    </div>
+  </div>
+
+  <!-- 星座早見表 -->
+  <div class="zodiac-table-wrap">
+    <div class="zodiac-table-title">✦ このツールで使用している星座の区分 ✦</div>
+    <div class="zodiac-grid" id="zodiacGrid"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+// ===== キーワード定義 =====
+const KEYWORD_GROUPS = [
+  { label:"✦ 意志と行動", keywords:["どんな状況でも諦めない","使命や運命を背負っている","目的のためなら手段を選ばない","支配欲が強い","自由奔放で誰にも縛られない","行動が予測不能"] },
+  { label:"✦ 心の在り方",  keywords:["純粋で真っ直ぐ","冷酷で感情を見せない","本音を笑いの裏に隠す","過去に深い傷を持つ","感情が豊かで揺れやすい","飄々として掴みどころがない"] },
+  { label:"✦ 他者との関わり", keywords:["仲間のために体を張る","自分より他者を優先する","孤高を好む","場の空気を明るくする","憎めない愛嬌がある","知恵や力を授ける存在"] },
+  { label:"✦ 知性と洞察",  keywords:["深い洞察力を持つ","多くの秘密を知っている","謎めいた雰囲気がある","寡黙だが言葉に重みがある","成長し続ける","笑いの中に真実を宿す"] },
+  { label:"✦ 信念とこだわり", keywords:["正義感が強い","犠牲を厭わない","既存の秩序や常識を乱す","素直で裏表がない","主義や信念を曲げない","歪んだカリスマがある"] }
+];
+
+// ===== 星座データ =====
+const ZODIAC = [
+  { sign:"牡羊座",  symbol:"♈", period:"3/21〜4/19",  color:"#FF6B6B", trait:"情熱と挑戦の星",   birthday:["3-25","4-1","4-10"],  keys:["正義感が強い","どんな状況でも諦めない","純粋で真っ直ぐ","仲間のために体を張る","使命や運命を背負っている","成長し続ける"] },
+  { sign:"牡牛座",  symbol:"♉", period:"4/20〜5/20",  color:"#4ECDC4", trait:"安らぎと誠実の星",  birthday:["4-23","5-2","5-14"],  keys:["素直で裏表がない","憎めない愛嬌がある","自分より他者を優先する","主義や信念を曲げない","仲間のために体を張る","純粋で真っ直ぐ"] },
+  { sign:"双子座",  symbol:"♊", period:"5/21〜6/20",  color:"#FFE66D", trait:"変化と機知の星",   birthday:["5-25","6-3","6-15"],  keys:["行動が予測不能","飄々として掴みどころがない","本音を笑いの裏に隠す","自由奔放で誰にも縛られない","笑いの中に真実を宿す","既存の秩序や常識を乱す"] },
+  { sign:"蟹座",   symbol:"♋", period:"6/21〜7/22",  color:"#A8E6CF", trait:"慈愛と献身の星",   birthday:["6-25","7-4","7-16"],  keys:["自分より他者を優先する","仲間のために体を張る","犠牲を厭わない","感情が豊かで揺れやすい","素直で裏表がない","場の空気を明るくする"] },
+  { sign:"獅子座",  symbol:"♌", period:"7/23〜8/22",  color:"#FF8B94", trait:"誇りと使命の星",   birthday:["7-28","8-5","8-17"],  keys:["使命や運命を背負っている","成長し続ける","歪んだカリスマがある","正義感が強い","どんな状況でも諦めない","主義や信念を曲げない"] },
+  { sign:"乙女座",  symbol:"♍", period:"8/23〜9/22",  color:"#B8B8FF", trait:"洞察と献身の星",   birthday:["8-27","9-5","9-17"],  keys:["深い洞察力を持つ","寡黙だが言葉に重みがある","知恵や力を授ける存在","犠牲を厭わない","多くの秘密を知っている","自分より他者を優先する"] },
+  { sign:"天秤座",  symbol:"♎", period:"9/23〜10/23", color:"#FFDAB9", trait:"調和と愛嬌の星",   birthday:["9-27","10-6","10-18"], keys:["場の空気を明るくする","憎めない愛嬌がある","飄々として掴みどころがない","本音を笑いの裏に隠す","自分より他者を優先する","感情が豊かで揺れやすい"] },
+  { sign:"蠍座",   symbol:"♏", period:"10/24〜11/22", color:"#C3A6FF", trait:"深淵と再生の星",   birthday:["10-28","11-8","11-19"], keys:["過去に深い傷を持つ","孤高を好む","冷酷で感情を見せない","目的のためなら手段を選ばない","謎めいた雰囲気がある","多くの秘密を知っている"] },
+  { sign:"射手座",  symbol:"♐", period:"11/23〜12/21", color:"#85E3FF", trait:"自由と反骨の星",   birthday:["11-27","12-6","12-16"], keys:["自由奔放で誰にも縛られない","どんな状況でも諦めない","行動が予測不能","既存の秩序や常識を乱す","成長し続ける","笑いの中に真実を宿す"] },
+  { sign:"山羊座",  symbol:"♑", period:"12/22〜1/19",  color:"#B5EAD7", trait:"野望と孤独の星",   birthday:["12-26","1-5","1-14"],  keys:["支配欲が強い","目的のためなら手段を選ばない","深い洞察力を持つ","寡黙だが言葉に重みがある","孤高を好む","主義や信念を曲げない"] },
+  { sign:"水瓶座",  symbol:"♒", period:"1/20〜2/18",   color:"#9BF6FF", trait:"革命と謎の星",    birthday:["1-24","2-3","2-14"],  keys:["既存の秩序や常識を乱す","謎めいた雰囲気がある","深い洞察力を持つ","自由奔放で誰にも縛られない","飄々として掴みどころがない","多くの秘密を知っている"] },
+  { sign:"魚座",   symbol:"♓", period:"2/19〜3/20",   color:"#FFABF6", trait:"夢想と自己犠牲の星", birthday:["2-23","3-4","3-14"],  keys:["犠牲を厭わない","謎めいた雰囲気がある","多くの秘密を知っている","自分より他者を優先する","純粋で真っ直ぐ","感情が豊かで揺れやすい"] },
+];
+
+// ===== 星座早見表を生成 =====
+const grid = document.getElementById("zodiacGrid");
+ZODIAC.forEach(z => {
+  const c = document.createElement("div"); c.className = "zodiac-cell";
+  c.style.borderLeft = `2px solid ${z.color}66`;
+  c.innerHTML = `<span class="z-sym">${z.symbol}</span><div class="z-info"><div class="z-name" style="color:${z.color}">${z.sign}</div><div class="z-range">${z.period}</div></div>`;
+  grid.appendChild(c);
+});
+
+// ===== キーワードUI生成 =====
+let selected = {};
+const area = document.getElementById("kwArea");
+KEYWORD_GROUPS.forEach(({label, keywords}) => {
+  const gt = document.createElement("div"); gt.className = "group-title"; gt.textContent = label;
+  area.appendChild(gt);
+  const kd = document.createElement("div"); kd.className = "keywords";
+  keywords.forEach(kw => {
+    const btn = document.createElement("button"); btn.className = "kw"; btn.textContent = kw;
+    btn.onclick = () => { selected[kw] = !selected[kw]; btn.classList.toggle("on", !!selected[kw]); updateCount(); };
+    kd.appendChild(btn);
+  });
+  area.appendChild(kd);
+});
+function updateCount() {
+  const n = Object.values(selected).filter(Boolean).length;
+  document.getElementById("cnt").textContent = n;
+  document.getElementById("cntMsg").textContent = n < 3 ? "（3つ以上選んでください）" : "個選択中 ✓";
+}
+
+// ===== 状態 =====
+let currentDateKey = "";
+let currentZodiac  = null;
+
+// ===== 占いロジック =====
+function analyze() {
+  const list = Object.keys(selected).filter(k => selected[k]);
+  if (list.length < 3) { document.getElementById("errMsg").textContent = "キーワードを3つ以上選んでください。"; return; }
+  document.getElementById("errMsg").textContent = "";
+
+  const z = ZODIAC.map(z => ({ ...z, score: list.filter(k => z.keys.includes(k)).length }))
+                  .sort((a,b) => b.score - a.score || Math.random() - .5)[0];
+  const bdayKey = z.birthday[Math.floor(Math.random() * z.birthday.length)];
+  showResult(z, bdayKey, document.getElementById("charName").value, list);
+}
+
+function showResult(z, bdayKey, name, tags) {
+  currentDateKey = bdayKey;
+  currentZodiac  = z;
+
+  const [m, d] = bdayKey.split("-");
+  const bdayLabel = `${m}月${d}日`;
+  const msg = (DAILY_MESSAGES && DAILY_MESSAGES[bdayKey]) || { light: "星があなたに語りかけている", dark: "影もまた、あなたの一部だ" };
+
+  document.getElementById("result").style.border = `1px solid ${z.color}55`;
+  document.getElementById("result").style.display = "block";
+  document.getElementById("form").style.display   = "none";
+
+  if (name) document.getElementById("rName").textContent = `【 ${name} 】の星`;
+  else       document.getElementById("rName").textContent = "";
+  document.getElementById("rSymbol").textContent = z.symbol;
+  document.getElementById("rZodiac").textContent = z.sign;
+  document.getElementById("rZodiac").style.cssText = `font-size:32px;margin:0 0 4px;color:${z.color};text-shadow:0 0 20px ${z.color}`;
+  document.getElementById("rTrait").textContent   = z.trait;
+  document.getElementById("rBirthday").textContent = bdayLabel;
+  document.getElementById("rPeriod").textContent  = z.period;
+  document.getElementById("rLight").textContent   = msg.light;
+  document.getElementById("rDark").textContent    = msg.dark;
+
+  const tags2 = document.getElementById("rTags"); tags2.innerHTML = "";
+  (tags || []).forEach(kw => {
+    const s = document.createElement("span"); s.className = "res-tag";
+    s.style.cssText = `background:${z.color}22;border:1px solid ${z.color}55;color:${z.color}`;
+    s.textContent = kw; tags2.appendChild(s);
+  });
+}
+
+// ===== URL共有 =====
+// URLパラメータ読み込み
+(function() {
+  const p = new URLSearchParams(location.search);
+  const dateKey = p.get("d"), name = p.get("n") || "";
+  if (!dateKey || !DAILY_MESSAGES) return;
+  const [m, d] = dateKey.split("-");
+  if (!m || !d) return;
+  const mo = parseInt(m), da = parseInt(d);
+  // 日付から星座を特定
+  const z = ZODIAC.find(z => {
+    const k = z.birthday.includes(dateKey);
+    return k;
+  }) || guessZodiacByDate(mo, da);
+  if (!z) return;
+  document.getElementById("charName").value = name;
+  document.getElementById("form").style.display = "none";
+  showResult(z, dateKey, name, []);
+})();
+
+function guessZodiacByDate(m, d) {
+  const n = m * 100 + d;
+  if (n >= 321 && n <= 419) return ZODIAC[0];
+  if (n >= 420 && n <= 520) return ZODIAC[1];
+  if (n >= 521 && n <= 620) return ZODIAC[2];
+  if (n >= 621 && n <= 722) return ZODIAC[3];
+  if (n >= 723 && n <= 822) return ZODIAC[4];
+  if (n >= 823 && n <= 922) return ZODIAC[5];
+  if (n >= 923 && n <= 1023) return ZODIAC[6];
+  if (n >= 1024 && n <= 1122) return ZODIAC[7];
+  if (n >= 1123 && n <= 1221) return ZODIAC[8];
+  if (n >= 1222 || n <= 119) return ZODIAC[9];
+  if (n >= 120 && n <= 218) return ZODIAC[10];
+  return ZODIAC[11];
+}
+
+function copyUrl() {
+  if (!currentDateKey) return;
+  const name = document.getElementById("charName").value;
+  const url = `${location.origin}${location.pathname}?d=${encodeURIComponent(currentDateKey)}&n=${encodeURIComponent(name)}`;
+  navigator.clipboard.writeText(url).then(() => showToast("✓ URLをコピーしました"));
+}
+
+function shareX() {
+  if (!currentDateKey) return;
+  const name = document.getElementById("charName").value;
+  const [m, d] = currentDateKey.split("-");
+  const msg = DAILY_MESSAGES[currentDateKey];
+  const text = `${name ? `【${name}】` : ""}推定誕生日：${m}月${d}日（${currentZodiac.sign}）\n✦ ${msg ? msg.light : ""}\n#キャラクター誕生日占い`;
+  const url = `${location.origin}${location.pathname}?d=${encodeURIComponent(currentDateKey)}&n=${encodeURIComponent(name)}`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, "_blank");
+}
+
+function downloadImg() {
+  const el = document.getElementById("resultCapture");
+  html2canvas(el, { backgroundColor: "#0a0a2e", scale: 2, useCORS: true }).then(canvas => {
+    const a = document.createElement("a");
+    a.download = "birthday_result.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.display = "block";
+  setTimeout(() => { t.style.display = "none"; }, 2000);
+}
+
+function reset() {
+  selected = {};
+  document.querySelectorAll(".kw").forEach(b => b.classList.remove("on"));
+  document.getElementById("charName").value = "";
+  updateCount();
+  currentDateKey = ""; currentZodiac = null;
+  document.getElementById("result").style.display = "none";
+  document.getElementById("form").style.display   = "block";
+  history.replaceState(null, "", location.pathname);
+}
+
+// ===== 星アニメ =====
+const canvas = document.getElementById("stars"), ctx = canvas.getContext("2d");
+const stars = Array.from({length:80}, () => ({
+  x:Math.random(), y:Math.random(), r:Math.random()*2+.5,
+  phase:Math.random()*Math.PI*2, speed:Math.random()*.02+.01
+}));
+function draw(t) {
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  stars.forEach(s => {
+    ctx.beginPath();
+    ctx.arc(s.x*canvas.width, s.y*canvas.height, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${.2+.8*Math.abs(Math.sin(t*s.speed+s.phase))})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
